@@ -1,5 +1,4 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
@@ -17,6 +16,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "jsx": "react-jsx",
+    "noUncheckedIndexedAccess": true,
     "paths": {
       "@enplan/shared": ["./packages/shared/src"],
       "@enplan/shared/*": ["./packages/shared/src/*"],
