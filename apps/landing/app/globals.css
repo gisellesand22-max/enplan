@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-arena text-carbon font-work-sans;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply py-20 px-6 md:px-8 lg:px-12;
+  }
+
+  .container-landing {
+    @apply max-w-6xl mx-auto;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
