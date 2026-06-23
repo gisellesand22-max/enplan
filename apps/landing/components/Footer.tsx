@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Logo } from './Logo'
 
 export function Footer() {
   return (
@@ -6,8 +7,8 @@ export function Footer() {
       <div className="container-landing mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start gap-8">
           <div>
-            <p className="font-montserrat font-extrabold text-2xl text-white mb-2">enplan.</p>
-            <p className="text-sm text-white/50">Beneficios locales, verificados y reales.</p>
+            <Logo size="md" className="!text-white" />
+            <p className="text-sm text-white/50 mt-2">Beneficios locales, verificados y reales.</p>
           </div>
 
           <div className="flex gap-12">
@@ -33,7 +34,7 @@ export function Footer() {
           <p className="text-xs text-white/40">
             © {new Date().getFullYear()} enplan. Todos los derechos reservados.
           </p>
-          <p className="text-xs text-white/40">Hecho en Aguascalientes 🇲🇽</p>
+          <p className="text-xs text-white/40">Hecho con orgullo en Aguascalientes</p>
         </div>
       </div>
     </footer>

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { IconMenu2, IconX } from '@tabler/icons-react'
+import { Logo } from './Logo'
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
@@ -10,8 +11,8 @@ export function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-arena/80 backdrop-blur-md border-b border-arena-dark/30">
       <div className="container-landing mx-auto flex items-center justify-between h-16">
-        <Link href="/" className="font-montserrat font-extrabold text-2xl text-carbon tracking-tight">
-          enplan.
+        <Link href="/">
+          <Logo size="md" />
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
@@ -23,7 +24,7 @@ export function Navbar() {
           </Link>
           <Link
             href="/become-a-partner"
-            className="bg-lima text-carbon font-semibold text-sm px-5 py-2.5 rounded-full hover:bg-lima-400 transition-colors"
+            className="bg-carbon text-white font-semibold text-sm px-5 py-2.5 rounded-full hover:bg-carbon-700 transition-colors"
           >
             Únete como socio
           </Link>
@@ -45,7 +46,7 @@ export function Navbar() {
           <Link
             href="/become-a-partner"
             onClick={() => setOpen(false)}
-            className="block bg-lima text-carbon font-semibold text-sm px-5 py-2.5 rounded-full text-center"
+            className="block bg-carbon text-white font-semibold text-sm px-5 py-2.5 rounded-full text-center"
           >
             Únete como socio
           </Link>

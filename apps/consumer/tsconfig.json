@@ -1,0 +1,14 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@/*": ["./*"],
+      "@enplan/shared": ["../../packages/shared/src"],
+      "@enplan/shared/*": ["../../packages/shared/src/*"],
+      "@enplan/auth": ["../../packages/auth/src"],
+      "@enplan/auth/*": ["../../packages/auth/src/*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
+}

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Navbar } from '../../components/Navbar'
 import { Footer } from '../../components/Footer'
+import { Logo } from '../../components/Logo'
 import {
   IconChartBar,
   IconShieldCheck,
@@ -11,6 +12,10 @@ import {
   IconArrowRight,
   IconChevronDown,
   IconChevronUp,
+  IconUsers,
+  IconDeviceMobile,
+  IconClock,
+  IconTrendingUp,
 } from '@tabler/icons-react'
 
 const benefits = [
@@ -34,10 +39,32 @@ const benefits = [
   },
 ]
 
+const howItWorksForBusiness = [
+  {
+    icon: IconUsers,
+    step: '01',
+    title: 'El cliente activa',
+    description: 'Un usuario cercano ve tu promo en enplan. y la activa. Recibe un código de 4 dígitos.',
+  },
+  {
+    icon: IconDeviceMobile,
+    step: '02',
+    title: 'Tú validas',
+    description: 'El cliente te da su código. Lo ingresas en negocios.enplan.app desde cualquier dispositivo.',
+  },
+  {
+    icon: IconTrendingUp,
+    step: '03',
+    title: 'Tú creces',
+    description: 'Cada visita queda registrada. Ves tus métricas en tiempo real y tomas mejores decisiones.',
+  },
+]
+
 const plans = [
   {
     name: 'Básico',
     price: '$499',
+    description: 'Para probar el concepto',
     features: [
       { text: '1 promoción activa', included: true },
       { text: 'Perfil en directorio', included: true },
@@ -51,6 +78,7 @@ const plans = [
   {
     name: 'Pro',
     price: '$999',
+    description: 'El más elegido',
     popular: true,
     features: [
       { text: '2 promociones activas', included: true },
@@ -65,6 +93,7 @@ const plans = [
   {
     name: 'Premium',
     price: '$1,799',
+    description: 'Para dominar tu categoría',
     features: [
       { text: 'Promos ilimitadas', included: true },
       { text: 'Perfil en directorio', included: true },
@@ -125,31 +154,70 @@ export default function BecomeAPartnerPage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-28 pb-20 px-6 md:px-8">
+      <section className="pt-24 pb-16 px-6 md:px-8 relative overflow-hidden">
+        <div className="absolute top-20 left-0 w-96 h-96 bg-lima/10 rounded-full blur-3xl -z-10" />
+        <div className="absolute bottom-0 right-0 w-72 h-72 bg-lima/5 rounded-full blur-3xl -z-10" />
+
         <div className="container-landing mx-auto text-center">
-          <div className="inline-block bg-lima/20 text-carbon font-medium text-sm px-4 py-1.5 rounded-full mb-6">
+          <div className="inline-flex items-center gap-2 bg-lima text-carbon font-bold text-sm px-5 py-2 rounded-full mb-8">
+            <IconClock size={16} />
             Solo 50 cupos de socio fundador
           </div>
-          <h1 className="font-montserrat font-extrabold text-4xl md:text-6xl text-carbon leading-tight text-balance max-w-4xl mx-auto">
-            Haz crecer tu negocio con{' '}
-            <span className="relative">
+          <h1 className="font-montserrat font-extrabold text-4xl md:text-6xl text-carbon leading-[1.1] text-balance max-w-4xl mx-auto">
+            Atrae clientes nuevos con{' '}
+            <span className="relative inline-block">
               enplan.
-              <span className="absolute -bottom-2 left-0 right-0 h-3 bg-lima/40 -z-10 rounded-sm" />
+              <svg className="absolute -bottom-2 left-0 w-full -z-10" viewBox="0 0 200 12" fill="none">
+                <path d="M2 8C40 3 100 1 198 6" stroke="#CDD917" strokeWidth="5" strokeLinecap="round" />
+              </svg>
             </span>
           </h1>
-          <p className="mt-6 text-lg md:text-xl text-carbon/60 max-w-2xl mx-auto">
-            Atrae clientes nuevos con promociones verificables. Sin riesgo: tu primer mes es gratis.
+          <p className="mt-8 text-lg md:text-xl text-carbon/60 max-w-2xl mx-auto leading-relaxed">
+            Promociones verificables con código único. Dashboard en tiempo real. Sin riesgo: tu primer mes es completamente gratis.
           </p>
+          <div className="mt-10">
+            <a
+              href="#contacto"
+              className="bg-carbon text-white font-bold px-8 py-4 rounded-full text-lg hover:bg-carbon-700 transition-colors inline-flex items-center gap-2"
+            >
+              Solicitar mi lugar
+              <IconArrowRight size={20} />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* How it works for business */}
+      <section className="section-padding bg-carbon text-white">
+        <div className="container-landing mx-auto">
+          <div className="text-center mb-14">
+            <span className="text-sm font-semibold text-lima uppercase tracking-wider">Así funciona para ti</span>
+            <h2 className="font-montserrat font-bold text-3xl md:text-4xl mt-3 text-white">
+              Clientes reales, datos reales
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {howItWorksForBusiness.map((step) => (
+              <div key={step.step} className="bg-white/5 border border-white/10 rounded-2xl p-7">
+                <span className="font-montserrat font-extrabold text-3xl text-lima/30">{step.step}</span>
+                <div className="w-12 h-12 bg-lima rounded-xl flex items-center justify-center my-4">
+                  <step.icon size={24} className="text-carbon" />
+                </div>
+                <h3 className="font-montserrat font-bold text-lg mb-2">{step.title}</h3>
+                <p className="text-sm text-white/50 leading-relaxed">{step.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Benefits */}
-      <section className="section-padding bg-white">
+      <section className="section-padding">
         <div className="container-landing mx-auto">
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6">
             {benefits.map((b) => (
-              <div key={b.title} className="text-center">
-                <div className="w-14 h-14 bg-lima/15 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div key={b.title} className="bg-white rounded-2xl p-7 border border-arena-dark/20 hover:shadow-lg transition-shadow">
+                <div className="w-14 h-14 bg-lima/15 rounded-2xl flex items-center justify-center mb-5">
                   <b.icon size={28} className="text-carbon" />
                 </div>
                 <h3 className="font-montserrat font-bold text-xl mb-2">{b.title}</h3>
@@ -160,41 +228,130 @@ export default function BecomeAPartnerPage() {
         </div>
       </section>
 
+      {/* Dashboard mockup */}
+      <section className="section-padding bg-lima/10 relative overflow-hidden">
+        <div className="absolute -top-20 -right-20 w-64 h-64 bg-lima/20 rounded-full blur-3xl" />
+        <div className="container-landing mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <span className="text-sm font-semibold text-lima-700 uppercase tracking-wider">Tu panel de negocio</span>
+              <h2 className="font-montserrat font-bold text-3xl md:text-4xl mt-3 mb-4">
+                Todo lo que necesitas en un solo lugar
+              </h2>
+              <p className="text-carbon/50 leading-relaxed mb-6">
+                Abre negocios.enplan.app desde cualquier dispositivo. Sin descargar apps, sin complicaciones.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'Valida códigos al instante',
+                  'Ve cuántos clientes llegan por enplan.',
+                  'Pausa o activa tus promos cuando quieras',
+                  'Métricas por día, semana y mes',
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 bg-lima rounded-full flex items-center justify-center shrink-0">
+                      <IconCheck size={12} className="text-carbon" />
+                    </div>
+                    <span className="text-carbon/70">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Dashboard mini mockup */}
+            <div className="bg-white rounded-2xl shadow-xl p-6 border border-arena-dark/20">
+              <div className="flex items-center justify-between mb-5">
+                <Logo size="sm" />
+                <span className="text-xs bg-lima/20 text-carbon font-medium px-2.5 py-1 rounded-full">Panel de negocio</span>
+              </div>
+              <div className="grid grid-cols-3 gap-3 mb-5">
+                {[
+                  { label: 'Hoy', value: '12' },
+                  { label: 'Semana', value: '47' },
+                  { label: 'Mes', value: '183' },
+                ].map((m) => (
+                  <div key={m.label} className="bg-arena rounded-xl p-3 text-center">
+                    <p className="font-montserrat font-extrabold text-2xl text-carbon">{m.value}</p>
+                    <p className="text-xs text-carbon/40 mt-0.5">{m.label}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="space-y-2">
+                {[
+                  { name: 'Carlos', promo: '2x1 en café', time: '10:32', status: 'usada' },
+                  { name: 'María', promo: '20% en cuenta', time: '11:15', status: 'activa' },
+                  { name: 'Juan', promo: '2x1 en café', time: '12:01', status: 'activa' },
+                ].map((v) => (
+                  <div key={v.name + v.time} className="flex items-center justify-between bg-arena rounded-lg p-3">
+                    <div>
+                      <span className="font-semibold text-sm">{v.name}</span>
+                      <span className="text-carbon/40 text-xs ml-2">{v.promo}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-carbon/30">{v.time}</span>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        v.status === 'usada' ? 'bg-carbon text-white' : 'bg-lima/30 text-carbon'
+                      }`}>
+                        {v.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Plans */}
       <section className="section-padding">
         <div className="container-landing mx-auto">
-          <h2 className="font-montserrat font-bold text-3xl md:text-4xl text-center mb-4">
-            Planes y precios
-          </h2>
-          <p className="text-center text-carbon/50 mb-4">Primer mes gratis en todos los planes.</p>
+          <div className="text-center mb-4">
+            <span className="text-sm font-semibold text-lima-700 uppercase tracking-wider">Planes</span>
+            <h2 className="font-montserrat font-bold text-3xl md:text-4xl mt-3">
+              Planes y precios
+            </h2>
+          </div>
+          <p className="text-center text-carbon/50 mb-2">Primer mes gratis en todos los planes.</p>
           <p className="text-center text-xs text-carbon/30 mb-14">Sin permanencia. Cancela cuando quieras.</p>
 
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {plans.map((plan) => (
               <div
                 key={plan.name}
-                className={`bg-white rounded-2xl p-6 border-2 relative ${
-                  plan.popular ? 'border-lima shadow-lg' : 'border-arena-dark/20'
+                className={`rounded-2xl p-7 relative ${
+                  plan.popular
+                    ? 'bg-carbon text-white shadow-xl shadow-carbon/20'
+                    : 'bg-white border-2 border-arena-dark/20'
                 }`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-lima text-carbon text-xs font-bold px-3 py-1 rounded-full">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-lima text-carbon text-xs font-bold px-4 py-1 rounded-full">
                     Más popular
                   </div>
                 )}
-                <h3 className="font-montserrat font-bold text-xl mb-1">{plan.name}</h3>
+                <h3 className="font-montserrat font-bold text-xl mb-0.5">{plan.name}</h3>
+                <p className={`text-xs mb-4 ${plan.popular ? 'text-white/40' : 'text-carbon/40'}`}>{plan.description}</p>
                 <div className="flex items-baseline gap-1 mb-6">
                   <span className="font-montserrat font-extrabold text-3xl">{plan.price}</span>
-                  <span className="text-carbon/40 text-sm">MXN/mes</span>
+                  <span className={`text-sm ${plan.popular ? 'text-white/40' : 'text-carbon/40'}`}>MXN/mes</span>
                 </div>
                 <ul className="space-y-3">
                   {plan.features.map((f) => (
-                    <li key={f.text} className="flex items-center gap-2 text-sm">
+                    <li key={f.text} className="flex items-center gap-2.5 text-sm">
                       <IconCheck
                         size={16}
-                        className={f.included ? 'text-lima-600' : 'text-arena-dark'}
+                        className={
+                          f.included
+                            ? plan.popular ? 'text-lima' : 'text-lima-600'
+                            : plan.popular ? 'text-white/20' : 'text-arena-dark'
+                        }
                       />
-                      <span className={f.included ? 'text-carbon' : 'text-carbon/30'}>
+                      <span className={
+                        f.included
+                          ? ''
+                          : plan.popular ? 'text-white/30' : 'text-carbon/30'
+                      }>
                         {f.text}
                       </span>
                     </li>
@@ -202,7 +359,7 @@ export default function BecomeAPartnerPage() {
                 </ul>
                 <a
                   href="#contacto"
-                  className={`mt-6 block text-center font-semibold py-2.5 rounded-full text-sm transition-colors ${
+                  className={`mt-7 block text-center font-semibold py-3 rounded-full text-sm transition-colors ${
                     plan.popular
                       ? 'bg-lima text-carbon hover:bg-lima-400'
                       : 'border-2 border-carbon/20 text-carbon hover:border-carbon/40'
@@ -227,7 +384,7 @@ export default function BecomeAPartnerPage() {
           </p>
 
           {submitted ? (
-            <div className="text-center bg-lima/10 rounded-2xl p-10">
+            <div className="text-center bg-lima/10 rounded-2xl p-10 border border-lima/20">
               <div className="w-16 h-16 bg-lima rounded-full flex items-center justify-center mx-auto mb-4">
                 <IconCheck size={32} className="text-carbon" />
               </div>
@@ -246,7 +403,7 @@ export default function BecomeAPartnerPage() {
                   <input
                     type="text"
                     required
-                    className="w-full px-4 py-2.5 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm transition-colors"
                     placeholder="Café Central"
                   />
                 </div>
@@ -257,7 +414,7 @@ export default function BecomeAPartnerPage() {
                   <input
                     type="text"
                     required
-                    className="w-full px-4 py-2.5 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm transition-colors"
                     placeholder="Carlos Mendoza"
                   />
                 </div>
@@ -268,7 +425,7 @@ export default function BecomeAPartnerPage() {
                   <input
                     type="email"
                     required
-                    className="w-full px-4 py-2.5 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm transition-colors"
                     placeholder="carlos@cafecentral.mx"
                   />
                 </div>
@@ -278,7 +435,7 @@ export default function BecomeAPartnerPage() {
                   </label>
                   <input
                     type="tel"
-                    className="w-full px-4 py-2.5 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm transition-colors"
                     placeholder="449 123 4567"
                   />
                 </div>
@@ -287,7 +444,7 @@ export default function BecomeAPartnerPage() {
                 <label className="block text-sm font-medium text-carbon/70 mb-1.5">Categoría</label>
                 <select
                   required
-                  className="w-full px-4 py-2.5 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm"
+                  className="w-full px-4 py-3 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm transition-colors"
                 >
                   <option value="">Selecciona una categoría</option>
                   {categorias.map((c) => (
@@ -303,13 +460,13 @@ export default function BecomeAPartnerPage() {
                 </label>
                 <textarea
                   rows={3}
-                  className="w-full px-4 py-2.5 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm resize-none transition-colors"
                   placeholder="Cuéntanos sobre tu negocio..."
                 />
               </div>
               <button
                 type="submit"
-                className="w-full bg-lima text-carbon font-semibold py-3 rounded-full text-lg hover:bg-lima-400 transition-colors flex items-center justify-center gap-2"
+                className="w-full bg-lima text-carbon font-bold py-3.5 rounded-full text-lg hover:bg-lima-400 transition-all hover:shadow-lg hover:shadow-lima/25 flex items-center justify-center gap-2"
               >
                 Enviar solicitud
                 <IconArrowRight size={20} />
@@ -322,14 +479,17 @@ export default function BecomeAPartnerPage() {
       {/* FAQ */}
       <section className="section-padding">
         <div className="container-landing mx-auto max-w-2xl">
-          <h2 className="font-montserrat font-bold text-3xl md:text-4xl text-center mb-12">
-            Preguntas frecuentes
-          </h2>
+          <div className="text-center mb-12">
+            <span className="text-sm font-semibold text-lima-700 uppercase tracking-wider">FAQ</span>
+            <h2 className="font-montserrat font-bold text-3xl md:text-4xl mt-3">
+              Preguntas frecuentes
+            </h2>
+          </div>
           <div className="space-y-3">
             {faqs.map((faq, i) => (
               <div
                 key={i}
-                className="bg-white rounded-xl border border-arena-dark/20 overflow-hidden"
+                className="bg-white rounded-xl border border-arena-dark/20 overflow-hidden hover:shadow-sm transition-shadow"
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
@@ -337,9 +497,9 @@ export default function BecomeAPartnerPage() {
                 >
                   <span className="font-medium text-sm pr-4">{faq.q}</span>
                   {openFaq === i ? (
-                    <IconChevronUp size={18} className="text-carbon/40 shrink-0" />
+                    <IconChevronUp size={18} className="text-lima-700 shrink-0" />
                   ) : (
-                    <IconChevronDown size={18} className="text-carbon/40 shrink-0" />
+                    <IconChevronDown size={18} className="text-carbon/30 shrink-0" />
                   )}
                 </button>
                 {openFaq === i && (
@@ -350,6 +510,26 @@ export default function BecomeAPartnerPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="section-padding bg-carbon">
+        <div className="container-landing mx-auto text-center">
+          <Logo size="lg" className="!text-white justify-center mb-6" />
+          <h2 className="font-montserrat font-bold text-2xl md:text-3xl text-white mb-3">
+            Tu lugar como socio fundador te espera
+          </h2>
+          <p className="text-white/40 max-w-md mx-auto mb-8 text-sm">
+            Solo 50 negocios en el lanzamiento de Aguascalientes. Primer mes gratis, sin permanencia.
+          </p>
+          <a
+            href="#contacto"
+            className="bg-lima text-carbon font-bold px-8 py-4 rounded-full text-lg hover:bg-lima-400 transition-all hover:shadow-lg hover:shadow-lima/25 inline-flex items-center gap-2"
+          >
+            Asegurar mi lugar
+            <IconArrowRight size={20} />
+          </a>
         </div>
       </section>
 
