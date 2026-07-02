@@ -1,0 +1,9 @@
+{
+  "folders": [{"path": ".", "name": "QB (enplan.)"},{"path": "../enplan-frontend", "name": "Frontend"},{"path": "../enplan-backend", "name": "Backend"},{"path": "../enplan-api", "name": "Api"},{"path": "../enplan-database", "name": "Database"},{"path": "../enplan-tests", "name": "Tests"},{"path": "../enplan-devops", "name": "Devops"},{"path": "../enplan-auth", "name": "Auth"},{"path": "../enplan-ui", "name": "Ui"},{"path": "../enplan-mobile", "name": "Mobile"},{"path": "../enplan-review", "name": "Review"}],
+  "settings": {
+    "files.exclude": {
+      "**/.git": true,
+      "**/.DS_Store": true
+    }
+  }
+}

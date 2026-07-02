@@ -1,7 +1,7 @@
 {
   "name": "enplan",
   "private": true,
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": ["apps/landing", "apps/business", "apps/consumer", "packages/*"],
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
