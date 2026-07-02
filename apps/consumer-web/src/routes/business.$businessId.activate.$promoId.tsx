@@ -57,9 +57,17 @@ function ActivatePage() {
   const navigate = useNavigate();
   const [benefit, setBenefit] = useState<ActiveBenefit | null>(null);
 
-  // create the code once on mount when logged in
+  // Los hooks SIEMPRE se declaran arriba, nunca dentro de un if —
+  // el hook condicional anterior podía crashear la app al azar.
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      navigate({
+        to: "/login",
+        search: { next: `/business/${business.id}/activate/${promo.id}` },
+        replace: true,
+      });
+      return;
+    }
     const b = enplanActions.activate({
       businessId: business.id,
       businessName: business.name,
@@ -71,14 +79,6 @@ function ActivatePage() {
   }, []);
 
   if (!user) {
-    // redirect to login
-    useEffect(() => {
-      navigate({
-        to: "/login",
-        search: { next: `/business/${business.id}/activate/${promo.id}` },
-        replace: true,
-      });
-    }, []);
     return null;
   }
 

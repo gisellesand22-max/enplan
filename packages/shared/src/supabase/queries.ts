@@ -41,9 +41,9 @@ export async function getPromociones(client: SupabaseClient, negocioId: string) 
     .order('created_at', { ascending: false });
 }
 
-export async function activarPromo(client: SupabaseClient, userId: string, promoId: string) {
+// Seguridad: NO se manda userId — el servidor usa auth.uid() de la sesión.
+export async function activarPromo(client: SupabaseClient, promoId: string) {
   return client.rpc('activar_promo', {
-    p_user_id: userId,
     p_promo_id: promoId,
   });
 }
@@ -58,22 +58,22 @@ export async function validarCodigo(client: SupabaseClient, codigo: string, nego
 export async function getActivacionesUsuario(client: SupabaseClient, userId: string) {
   return client
     .from('activaciones')
-    .select('*, promocion:promociones(*), negocio:negocios(id, nombre, logo_url, categoria)')
+    .select('*, promocion:promociones(*), negocio:negocios(id, nombre, categoria)')
     .eq('user_id', userId)
-    .order('activado_en', { ascending: false });
+    .order('timestamp_activacion', { ascending: false });
 }
 
 export async function getDashboardNegocio(client: SupabaseClient, negocioId: string) {
   const { start, end } = todayRange();
 
   const [visitasHoy, promosActivas] = await Promise.all([
-    client
-      .from('activaciones')
-      .select('id, user:users(nombre, apellido), promocion:promociones(titulo), estado, activado_en')
-      .eq('negocio_id', negocioId)
-      .gte('activado_en', start)
-      .lte('activado_en', end)
-      .order('activado_en', { ascending: false }),
+    // Privacidad: el negocio NUNCA consulta la tabla users. La función
+    // get_visitas_negocio devuelve solo el nombre de pila del cliente.
+    client.rpc('get_visitas_negocio', {
+      p_negocio_id: negocioId,
+      p_desde: start,
+      p_hasta: end,
+    }),
     client
       .from('promociones')
       .select('id', { count: 'exact', head: true })
@@ -91,8 +91,8 @@ export async function checkDailyLimit(client: SupabaseClient, userId: string) {
     .from('activaciones')
     .select('id', { count: 'exact', head: true })
     .eq('user_id', userId)
-    .gte('activado_en', start)
-    .lte('activado_en', end);
+    .gte('timestamp_activacion', start)
+    .lte('timestamp_activacion', end);
 
   return { count: count ?? 0 };
 }

@@ -9,7 +9,7 @@ export interface Promo {
 export interface Business {
   id: string
   nombre: string
-  categoria: 'comida' | 'bienestar' | 'ocio' | 'negocios'
+  categoria: 'comida' | 'belleza' | 'fitness' | 'ocio' | 'tiendas' | 'servicios'
   categoriaLabel: string
   descripcion: string
   direccion: string
@@ -49,7 +49,7 @@ export const DEMO_BUSINESSES: Record<string, Business> = {
   'gym-fitzone': {
     id: 'gym-fitzone',
     nombre: 'Gym FitZone',
-    categoria: 'bienestar',
+    categoria: 'fitness',
     categoriaLabel: 'Bienestar',
     descripcion:
       'Gimnasio con equipamiento de última generación, clases grupales y entrenadores certificados. El mejor gym de la zona norte.',
@@ -96,7 +96,7 @@ export const DEMO_BUSINESSES: Record<string, Business> = {
   'salon-bella': {
     id: 'salon-bella',
     nombre: 'Salón Bella',
-    categoria: 'bienestar',
+    categoria: 'belleza',
     categoriaLabel: 'Bienestar',
     descripcion:
       'Salón de belleza con más de 10 años de experiencia. Cortes, tintes, tratamientos capilares y maquillaje profesional.',
@@ -143,7 +143,7 @@ export const DEMO_BUSINESSES: Record<string, Business> = {
   'yoga-zen': {
     id: 'yoga-zen',
     nombre: 'Yoga Zen Studio',
-    categoria: 'bienestar',
+    categoria: 'fitness',
     categoriaLabel: 'Bienestar',
     descripcion:
       'Estudio de yoga y meditación con clases para todos los niveles. Hatha, Vinyasa, Yin y meditación guiada en un espacio tranquilo.',
@@ -163,7 +163,7 @@ export const DEMO_BUSINESSES: Record<string, Business> = {
   'taller-rapido': {
     id: 'taller-rapido',
     nombre: 'Taller Rápido',
-    categoria: 'negocios',
+    categoria: 'servicios',
     categoriaLabel: 'Negocios',
     descripcion:
       'Taller mecánico con servicio express. Cambio de aceite, frenos, afinación y diagnóstico computarizado en menos de 2 horas.',

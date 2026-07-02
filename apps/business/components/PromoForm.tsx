@@ -5,12 +5,18 @@ import { useRouter } from 'next/navigation'
 import { IconArrowLeft } from '@tabler/icons-react'
 import { Button, Input } from '@enplan/ui'
 import { useStore } from '../lib/store'
-import { PROMO_TYPES, calcAhorro, valorField, type Promo, type TipoPromo } from '../lib/demo'
+import { PLAN_LIMITS, PROMO_TYPES, calcAhorro, valorField, type Promo, type TipoPromo } from '../lib/demo'
 
 export function PromoForm({ existing }: { existing?: Promo }) {
   const router = useRouter()
-  const { addPromo, updatePromo } = useStore()
+  const { addPromo, updatePromo, negocio, promos } = useStore()
   const isEdit = Boolean(existing)
+
+  // Límite del plan aplicado también en la interfaz (la barrera real vive en
+  // la base de datos — trigger enforce_plan_promo_limit — esto es solo UX).
+  const limit = PLAN_LIMITS[negocio.plan]
+  const activasCount = promos.filter((pr) => pr.activa && pr.id !== existing?.id).length
+  const atLimit = activasCount >= limit
 
   const [tipo, setTipo] = useState<TipoPromo>(existing?.tipo ?? 'porcentaje')
   const [titulo, setTitulo] = useState(existing?.titulo ?? '')
@@ -27,6 +33,10 @@ export function PromoForm({ existing }: { existing?: Promo }) {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (activa && atLimit) {
+      alert(`Tu plan permite máximo ${limit} promoción(es) activa(s). Pausa una o sube de plan.`)
+      return
+    }
     const payload = {
       tipo,
       titulo,

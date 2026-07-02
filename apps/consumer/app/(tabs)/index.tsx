@@ -10,14 +10,16 @@ import {
 } from '@tabler/icons-react'
 import { getAllBusinesses, type Business } from '../../data/demo'
 
-type Category = 'todos' | 'comida' | 'bienestar' | 'ocio' | 'negocios'
+type Category = 'todos' | 'comida' | 'belleza' | 'fitness' | 'ocio' | 'tiendas' | 'servicios'
 
 const chips: { key: Category; label: string }[] = [
   { key: 'todos', label: 'Todos' },
   { key: 'comida', label: 'Comida' },
-  { key: 'bienestar', label: 'Bienestar' },
+  { key: 'belleza', label: 'Belleza' },
+  { key: 'fitness', label: 'Fitness' },
   { key: 'ocio', label: 'Ocio' },
-  { key: 'negocios', label: 'Negocios' },
+  { key: 'tiendas', label: 'Tiendas' },
+  { key: 'servicios', label: 'Servicios' },
 ]
 
 const categoryIcons: Record<string, typeof IconToolsKitchen2> = {

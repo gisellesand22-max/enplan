@@ -50,7 +50,7 @@ const howItWorksForBusiness = [
     icon: IconDeviceMobile,
     step: '02',
     title: 'Tú validas',
-    description: 'El cliente te da su código. Lo ingresas en negocios.enplan.app desde cualquier dispositivo.',
+    description: 'La visita se registra al activar. Si quieres confirmar el consumo, el cliente te da su código y lo ingresas en negocios.enplan.app — es opcional.',
   },
   {
     icon: IconTrendingUp,
@@ -109,11 +109,11 @@ const plans = [
 const faqs = [
   {
     q: '¿Qué es enplan.?',
-    a: 'Una plataforma que conecta negocios locales con consumidores cercanos mediante promociones exclusivas y verificables. Los clientes activan un beneficio en la app y lo confirman en tu negocio con un código de 4 dígitos.',
+    a: 'Una plataforma que conecta negocios locales con consumidores cercanos mediante promociones exclusivas y verificables. Los clientes activan un beneficio en la app y su visita queda registrada al instante; el código de 4 dígitos es una confirmación opcional del consumo.',
   },
   {
     q: '¿Cómo verifico que un cliente tiene beneficio?',
-    a: 'El cliente te da un código de 4 dígitos. Tú lo ingresas en negocios.enplan.app desde cualquier dispositivo y al instante ves si es válido, el nombre del cliente y qué promo activó.',
+    a: 'Cada activación aparece de inmediato en tu panel. Si quieres confirmar el consumo, el cliente te da su código de 4 dígitos y lo ingresas en negocios.enplan.app — verás el nombre del cliente y la promo. Validar es opcional.',
   },
   {
     q: '¿Hay permanencia o contrato a largo plazo?',
@@ -135,9 +135,10 @@ const faqs = [
 
 const categorias = [
   { value: 'comida', label: 'Comida' },
-  { value: 'bienestar', label: 'Bienestar' },
+  { value: 'belleza', label: 'Belleza' },
+  { value: 'fitness', label: 'Fitness' },
   { value: 'ocio', label: 'Ocio' },
-  { value: 'negocios', label: 'Negocios / Servicios' },
+
 ]
 
 export default function BecomeAPartnerPage() {

@@ -22,9 +22,21 @@ export interface Promo {
 }
 
 /** Estimated pesos a customer saves per visit. Powers the app's "ahorras $X". */
+// NOTA: este cálculo es solo VISUAL (vista previa en el panel). El ahorro
+// real lo calcula el servidor en activar_promo() — el cliente nunca lo manda.
 export function calcAhorro(p: { tipo: TipoPromo; valor: number; precioRef?: number }): number {
-  if (!p.valor) return 0
-  if (p.tipo === 'porcentaje') return Math.round(((p.precioRef ?? 0) * p.valor) / 100)
+  if (!p.valor || !Number.isFinite(p.valor) || p.valor < 0) return 0
+  if (p.tipo === 'porcentaje') {
+    const ref = p.precioRef ?? 0
+    if (!Number.isFinite(ref) || ref <= 0) return 0
+    return Math.round((ref * Math.min(p.valor, 100)) / 100)
+  }
+  if (p.tipo === 'servicio') {
+    // valor = precio final que paga el cliente; precioRef = precio normal
+    const ref = p.precioRef ?? 0
+    if (!Number.isFinite(ref) || ref <= 0) return 0
+    return Math.max(Math.round(ref - p.valor), 0)
+  }
   return Math.round(p.valor)
 }
 
@@ -45,7 +57,7 @@ export function valorField(tipo: TipoPromo): {
     case 'clase':
       return { label: 'Valor de la clase (MXN)', help: 'Cuánto cuesta normalmente la clase', suffix: '$', needsPrecioRef: false }
     case 'servicio':
-      return { label: 'Valor del servicio (MXN)', help: 'Cuánto cuesta normalmente el servicio', suffix: '$', needsPrecioRef: false }
+      return { label: 'Precio con descuento (MXN)', help: 'Lo que pagará el cliente. Arriba pon el precio normal.', suffix: '$', needsPrecioRef: true }
   }
 }
 

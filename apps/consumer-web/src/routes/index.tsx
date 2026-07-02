@@ -42,13 +42,13 @@ const CHIPS: CatChip[] = [
     key: "Belleza",
     label: "Belleza",
     image: "/assets/icons/categories/icon-belleza.png",
-    match: (b) => b.category === "Bienestar" && /salón|bella|spa|belleza/i.test(b.name),
+    match: (b) => b.category === "Belleza",
   },
   {
     key: "Fitness",
     label: "Fitness",
     image: "/assets/icons/categories/icon-fitness.png",
-    match: (b) => b.category === "Bienestar" && /gym|yoga|fit|studio/i.test(b.name),
+    match: (b) => b.category === "Fitness",
   },
   {
     key: "Ocio",
@@ -60,13 +60,13 @@ const CHIPS: CatChip[] = [
     key: "Tiendas",
     label: "Tiendas",
     image: "/assets/icons/categories/icon-tiendas.png",
-    match: () => false,
+    match: (b) => b.category === "Tiendas",
   },
   {
     key: "Servicios",
     label: "Servicios",
     image: "/assets/icons/categories/icon-servicios.png",
-    match: (b) => b.category === "Negocios",
+    match: (b) => b.category === "Servicios",
   },
 ];
 

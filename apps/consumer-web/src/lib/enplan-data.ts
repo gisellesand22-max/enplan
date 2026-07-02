@@ -1,4 +1,4 @@
-export type Category = "Comida" | "Bienestar" | "Ocio" | "Negocios";
+export type Category = "Comida" | "Belleza" | "Fitness" | "Ocio" | "Tiendas" | "Servicios";
 
 export type Promo = {
   id: string;
@@ -16,6 +16,7 @@ export type Business = {
   plan: Plan;
   address: string;
   phone: string;
+  whatsapp: string; // número propio de CADA negocio, formato wa.me (521449...)
   hours: string;
   description: string;
   promos: Promo[];
@@ -24,9 +25,11 @@ export type Business = {
 export const CATEGORIES: { key: "Todos" | Category; label: string }[] = [
   { key: "Todos", label: "Todos" },
   { key: "Comida", label: "Comida" },
-  { key: "Bienestar", label: "Bienestar" },
+  { key: "Belleza", label: "Belleza" },
+  { key: "Fitness", label: "Fitness" },
   { key: "Ocio", label: "Ocio" },
-  { key: "Negocios", label: "Negocios" },
+  { key: "Tiendas", label: "Tiendas" },
+  { key: "Servicios", label: "Servicios" },
 ];
 
 export const BUSINESSES: Business[] = [
@@ -37,6 +40,7 @@ export const BUSINESSES: Business[] = [
     category: "Comida",
     address: "Av. Universidad 145, Centro, Aguascalientes",
     phone: "449 123 4567",
+    whatsapp: "5214491234567",
     hours: "Lun–Dom · 7:00–22:00",
     description:
       "Café de especialidad tostado en casa, repostería artesanal y un patio para trabajar o pasar la tarde con amigos.",
@@ -59,9 +63,10 @@ export const BUSINESSES: Business[] = [
     id: "gym-fitzone",
     plan: "Premium",
     name: "Gym FitZone",
-    category: "Bienestar",
+    category: "Fitness",
     address: "Blvd. a Zacatecas 1200, Trojes",
     phone: "449 234 5678",
+    whatsapp: "5214492345678",
     hours: "Lun–Sáb · 5:00–23:00",
     description:
       "Gimnasio con equipo de última generación, clases grupales y entrenadores certificados.",
@@ -81,6 +86,7 @@ export const BUSINESSES: Business[] = [
     category: "Ocio",
     address: "Calle Madero 312, Centro",
     phone: "449 345 6789",
+    whatsapp: "5214493456789",
     hours: "Mar–Sáb · 18:00–02:00",
     description:
       "Bar al aire libre con mixología de autor, música en vivo los fines de semana y la mejor terraza del centro.",
@@ -97,9 +103,10 @@ export const BUSINESSES: Business[] = [
     id: "salon-bella",
     plan: "Pro",
     name: "Salón Bella",
-    category: "Bienestar",
+    category: "Belleza",
     address: "Av. Aguascalientes Sur 405",
     phone: "449 456 7890",
+    whatsapp: "5214494567890",
     hours: "Lun–Sáb · 10:00–20:00",
     description:
       "Salón de belleza con estilistas expertos en color y cortes contemporáneos.",
@@ -119,6 +126,7 @@ export const BUSINESSES: Business[] = [
     category: "Comida",
     address: "Calle Nieto 88, Centro",
     phone: "449 567 8901",
+    whatsapp: "5214495678901",
     hours: "Lun–Dom · 13:00–01:00",
     description:
       "Tacos al pastor tradicionales hechos en trompo de leña. Más de 30 años en Aguascalientes.",
@@ -135,9 +143,10 @@ export const BUSINESSES: Business[] = [
     id: "yoga-zen-studio",
     plan: "Premium",
     name: "Yoga Zen Studio",
-    category: "Bienestar",
+    category: "Fitness",
     address: "Av. Convención 250, Jardines",
     phone: "449 678 9012",
+    whatsapp: "5214496789012",
     hours: "Lun–Sáb · 6:30–21:00",
     description:
       "Estudio boutique de yoga con clases para todos los niveles, meditación guiada y talleres mensuales.",
@@ -154,9 +163,10 @@ export const BUSINESSES: Business[] = [
     id: "taller-rapido",
     plan: "Básico",
     name: "Taller Rápido",
-    category: "Negocios",
+    category: "Servicios",
     address: "Av. Siglo XXI 1500, Industrial",
     phone: "449 789 0123",
+    whatsapp: "5214497890123",
     hours: "Lun–Sáb · 8:00–19:00",
     description:
       "Servicio mecánico express para tu auto. Diagnóstico computarizado sin costo.",
@@ -176,6 +186,7 @@ export const BUSINESSES: Business[] = [
     category: "Ocio",
     address: "Plaza Galerías, Av. Independencia 2351",
     phone: "449 890 1234",
+    whatsapp: "5214498901234",
     hours: "Lun–Dom · 12:00–00:00",
     description:
       "Cine independiente con estrenos seleccionados, ciclos temáticos y la mejor sala IMAX de la ciudad.",

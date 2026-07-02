@@ -58,7 +58,6 @@ export const Route = createFileRoute("/business/$businessId")({
 });
 
 const bodyFont = { fontFamily: '"Work Sans", system-ui, sans-serif' as const };
-const WHATSAPP_PHONE = "5214491234567";
 const WA_MESSAGE = "Hola, vi tu negocio en enplan. y me gustaría más información";
 
 function BusinessPage() {
@@ -80,7 +79,8 @@ function BusinessPage() {
     });
   };
 
-  const waUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(WA_MESSAGE)}`;
+  // Cada negocio tiene SU WhatsApp (viene del dato del negocio, no hardcodeado)
+  const waUrl = `https://wa.me/${business.whatsapp}?text=${encodeURIComponent(WA_MESSAGE)}`;
   const telUrl = `tel:${business.phone.replace(/\s/g, "")}`;
 
   return (

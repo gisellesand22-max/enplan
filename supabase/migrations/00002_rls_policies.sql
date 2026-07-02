@@ -58,12 +58,21 @@ create policy "users_update_own"
 -- consumers can browse). Write access is restricted to the owning business
 -- user via negocios.user_id.
 
--- Anyone authenticated can read active businesses.
+-- CUALQUIERA (incluso sin login) puede ver negocios activos.
+-- Clave para "browse before signup": el directorio es público.
 create policy "negocios_select_active"
   on public.negocios
   for select
-  to authenticated
+  to anon, authenticated
   using (activo = true);
+
+-- El dueño siempre ve su propio negocio, aunque esté desactivado
+-- (sin esto, el panel se queda en blanco si el negocio se pausa).
+create policy "negocios_select_owner"
+  on public.negocios
+  for select
+  to authenticated
+  using (auth.uid() = user_id);
 
 -- A business user can create their own negocio.
 create policy "negocios_insert_own"
@@ -95,11 +104,11 @@ create policy "negocios_delete_own"
 -- authenticated user. Write access is restricted to the owner of the parent
 -- negocio (promociones.negocio_id -> negocios.user_id = auth.uid()).
 
--- Anyone authenticated can read active promos belonging to active businesses.
+-- CUALQUIERA (incluso sin login) puede ver promos activas de negocios activos.
 create policy "promociones_select_active"
   on public.promociones
   for select
-  to authenticated
+  to anon, authenticated
   using (
     activa = true
     and exists (
@@ -107,6 +116,21 @@ create policy "promociones_select_active"
       from public.negocios n
       where n.id = promociones.negocio_id
         and n.activo = true
+    )
+  );
+
+-- El dueño siempre ve TODAS sus promos, incluidas las pausadas
+-- (sin esto, "Mis promociones" no puede listar las pausadas para reactivarlas).
+create policy "promociones_select_owner"
+  on public.promociones
+  for select
+  to authenticated
+  using (
+    exists (
+      select 1
+      from public.negocios n
+      where n.id = promociones.negocio_id
+        and n.user_id = auth.uid()
     )
   );
 

@@ -1,14 +1,16 @@
 import type { Activacion, CategoriaEnum, EstadoActivacionEnum, Negocio, Promocion, User } from './database';
 
+// El userId NO viaja desde el cliente: el servidor usa auth.uid()
 export interface ActivarPromoRequest {
-  userId: string;
   promoId: string;
 }
 
 export interface ActivarPromoResponse {
   success: boolean;
-  codigo: string;
-  expiraEn: string;
+  codigo?: string;
+  expiraEn?: string;
+  ahorroCalculado?: number;
+  error?: string;
 }
 
 export interface ValidarCodigoRequest {
@@ -37,7 +39,7 @@ export interface DashboardData {
   visitasDelDia: VisitaDelDia[];
 }
 
-export interface UserProfile extends Pick<User, 'id' | 'email' | 'nombre' | 'apellido' | 'plan'> {
+export interface UserProfile extends Pick<User, 'id' | 'email' | 'nombre' | 'apellido' | 'plan_consumidor'> {
   totalActivaciones: number;
   activacionesHoy: number;
 }
@@ -53,11 +55,10 @@ export interface NegocioConPromos extends Negocio {
 
 export interface ActivacionConDetalle extends Activacion {
   promocion: Promocion;
-  negocio: Pick<Negocio, 'id' | 'nombre' | 'logo_url' | 'categoria'>;
+  negocio: Pick<Negocio, 'id' | 'nombre' | 'categoria'>;
 }
 
 export interface PromoFilters {
   categoria?: CategoriaEnum;
-  soloPremium?: boolean;
   busqueda?: string;
 }

@@ -8,11 +8,14 @@ export const COLORS = {
   arenaOscuro: '#D6D0C4',
 } as const;
 
+// 6 categorías oficiales (PRD v1.7). Íconos PNG en /assets/icons/categories/
 export const CATEGORIES: { value: CategoriaEnum; label: string; icon: string }[] = [
-  { value: 'comida', label: 'Comida', icon: 'IconToolsKitchen2' },
-  { value: 'bienestar', label: 'Bienestar', icon: 'IconHeartbeat' },
-  { value: 'ocio', label: 'Ocio', icon: 'IconConfetti' },
-  { value: 'negocios', label: 'Negocios', icon: 'IconBriefcase' },
+  { value: 'comida', label: 'Comida', icon: 'icon-comida' },
+  { value: 'belleza', label: 'Belleza', icon: 'icon-belleza' },
+  { value: 'fitness', label: 'Fitness', icon: 'icon-fitness' },
+  { value: 'ocio', label: 'Ocio', icon: 'icon-ocio' },
+  { value: 'tiendas', label: 'Tiendas', icon: 'icon-tiendas' },
+  { value: 'servicios', label: 'Servicios', icon: 'icon-servicios' },
 ];
 
 export const PROMO_TYPES: { value: TipoPromoEnum; label: string }[] = [
