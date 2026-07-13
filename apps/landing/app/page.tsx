@@ -18,6 +18,7 @@ import {
   IconBuildingCommunity,
   IconCategory,
   IconDiscount2,
+  IconCheck,
 } from '@tabler/icons-react'
 
 const steps = [
@@ -30,13 +31,13 @@ const steps = [
   {
     icon: IconTicket,
     title: 'Activa tu beneficio',
-    description: 'Selecciona la promo que quieras y obtén tu código único de 4 dígitos.',
+    description: 'Selecciona la promo que quieras y actívala al instante.',
     color: 'bg-carbon text-white',
   },
   {
     icon: IconDeviceMobile,
-    title: 'Muestra tu código',
-    description: 'Dile tu código al empleado y disfruta tu beneficio al instante.',
+    title: 'Disfruta',
+    description: 'Muestra tu beneficio activo en el negocio y disfrútalo al instante.',
     color: 'bg-lima text-carbon',
   },
 ]
@@ -245,12 +246,12 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Code Demo */}
+            {/* Activation Demo */}
             <div className="flex justify-center">
               <div className="bg-carbon rounded-3xl p-8 text-center max-w-xs w-full shadow-2xl">
-                <div className="text-sm text-white/50 mb-2">Tu código de beneficio</div>
-                <div className="font-montserrat font-extrabold text-6xl text-white tracking-[0.2em] my-6">
-                  28<span className="text-lima">47</span>
+                <div className="text-sm text-white/50 mb-2">Beneficio activado</div>
+                <div className="w-16 h-16 bg-lima rounded-full flex items-center justify-center mx-auto my-6">
+                  <IconCheck size={36} className="text-carbon" />
                 </div>
                 <div className="bg-white/10 rounded-xl p-4 mb-4">
                   <p className="text-white font-semibold text-sm">Café La Estación</p>
@@ -283,9 +284,9 @@ export default function HomePage() {
               <div className="w-12 h-12 bg-lima rounded-xl flex items-center justify-center mb-4">
                 <IconShieldCheck size={24} className="text-carbon" />
               </div>
-              <h3 className="font-montserrat font-bold text-lg mb-2">Verificado con código</h3>
+              <h3 className="font-montserrat font-bold text-lg mb-2">Verificado en la app</h3>
               <p className="text-sm text-carbon/50 leading-relaxed">
-                Cada beneficio se confirma con un código de 4 dígitos. Sin capturas de pantalla, sin abusos, sin trucos.
+                Cada beneficio se verifica directamente en la app. Sin capturas de pantalla, sin abusos, sin trucos.
               </p>
             </div>
 

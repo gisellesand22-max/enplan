@@ -23,7 +23,7 @@ const benefits = [
     icon: IconChartBar,
     title: 'Clientes verificados',
     description:
-      'Cada visita se registra con código único. Sabrás exactamente cuántos clientes te llegaron por enplan.',
+      'Cada visita se registra automáticamente. Sabrás exactamente cuántos clientes te llegaron por enplan.',
   },
   {
     icon: IconShieldCheck,
@@ -44,13 +44,13 @@ const howItWorksForBusiness = [
     icon: IconUsers,
     step: '01',
     title: 'El cliente activa',
-    description: 'Un usuario cercano ve tu promo en enplan. y la activa. Recibe un código de 4 dígitos.',
+    description: 'Un usuario cercano ve tu promo en enplan. y la activa al instante.',
   },
   {
     icon: IconDeviceMobile,
     step: '02',
     title: 'Tú validas',
-    description: 'La visita se registra al activar. Si quieres confirmar el consumo, el cliente te da su código y lo ingresas en negocios.enplan.app — es opcional.',
+    description: 'La visita se registra automáticamente en tu panel. Ves quién activó, qué promo y a qué hora.',
   },
   {
     icon: IconTrendingUp,
@@ -63,7 +63,8 @@ const howItWorksForBusiness = [
 const plans = [
   {
     name: 'Básico',
-    price: '$499',
+    originalPrice: '$499',
+    price: '$399',
     description: 'Para probar el concepto',
     features: [
       { text: '1 promoción activa', included: true },
@@ -77,7 +78,8 @@ const plans = [
   },
   {
     name: 'Pro',
-    price: '$999',
+    originalPrice: '$999',
+    price: '$799',
     description: 'El más elegido',
     popular: true,
     features: [
@@ -92,7 +94,8 @@ const plans = [
   },
   {
     name: 'Premium',
-    price: '$1,799',
+    originalPrice: '$1,799',
+    price: '$1,500',
     description: 'Para dominar tu categoría',
     features: [
       { text: 'Promos ilimitadas', included: true },
@@ -101,6 +104,7 @@ const plans = [
       { text: 'Analítica avanzada', included: true },
       { text: 'Posición #1 en categoría', included: true },
       { text: 'Push notifications', included: true },
+      { text: 'Créditos de Meta Ads para tu negocio', included: true },
       { text: 'Account manager dedicado', included: true },
     ],
   },
@@ -109,11 +113,11 @@ const plans = [
 const faqs = [
   {
     q: '¿Qué es enplan.?',
-    a: 'Una plataforma que conecta negocios locales con consumidores cercanos mediante promociones exclusivas y verificables. Los clientes activan un beneficio en la app y su visita queda registrada al instante; el código de 4 dígitos es una confirmación opcional del consumo.',
+    a: 'Una plataforma que conecta negocios locales con consumidores cercanos mediante promociones exclusivas y verificables. Los clientes activan un beneficio en la app y su visita queda registrada al instante.',
   },
   {
     q: '¿Cómo verifico que un cliente tiene beneficio?',
-    a: 'Cada activación aparece de inmediato en tu panel. Si quieres confirmar el consumo, el cliente te da su código de 4 dígitos y lo ingresas en negocios.enplan.app — verás el nombre del cliente y la promo. Validar es opcional.',
+    a: 'Cada activación aparece de inmediato en tu panel. Verás el nombre del cliente, la promo y la hora exacta de cada visita.',
   },
   {
     q: '¿Hay permanencia o contrato a largo plazo?',
@@ -143,11 +147,39 @@ const categorias = [
 
 export default function BecomeAPartnerPage() {
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
   const [openFaq, setOpenFaq] = useState<number | null>(null)
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setSubmitted(true)
+    setSubmitting(true)
+    setError('')
+
+    const form = e.currentTarget
+    const data = {
+      negocio: (form.elements.namedItem('negocio') as HTMLInputElement).value,
+      contacto: (form.elements.namedItem('contacto') as HTMLInputElement).value,
+      email: (form.elements.namedItem('email') as HTMLInputElement).value,
+      telefono: (form.elements.namedItem('telefono') as HTMLInputElement).value,
+      categoria: (form.elements.namedItem('categoria') as HTMLSelectElement).value,
+      mensaje: (form.elements.namedItem('mensaje') as HTMLTextAreaElement).value,
+    }
+
+    try {
+      const res = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+
+      if (!res.ok) throw new Error()
+      setSubmitted(true)
+    } catch {
+      setError('Hubo un error. Intenta de nuevo o escríbenos a hola@enplan.app')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -174,7 +206,7 @@ export default function BecomeAPartnerPage() {
             </span>
           </h1>
           <p className="mt-8 text-lg md:text-xl text-carbon/60 max-w-2xl mx-auto leading-relaxed">
-            Promociones verificables con código único. Dashboard en tiempo real. Sin riesgo: tu primer mes es completamente gratis.
+            Promociones verificables. Dashboard en tiempo real. Sin riesgo: tu primer mes es completamente gratis.
           </p>
           <div className="mt-10">
             <a
@@ -244,7 +276,7 @@ export default function BecomeAPartnerPage() {
               </p>
               <ul className="space-y-3">
                 {[
-                  'Valida códigos al instante',
+                  'Ve activaciones al instante',
                   'Ve cuántos clientes llegan por enplan.',
                   'Pausa o activa tus promos cuando quieras',
                   'Métricas por día, semana y mes',
@@ -313,7 +345,11 @@ export default function BecomeAPartnerPage() {
               Planes y precios
             </h2>
           </div>
-          <p className="text-center text-carbon/50 mb-2">Primer mes gratis en todos los planes.</p>
+          <div className="flex justify-center mb-2">
+            <span className="inline-flex items-center gap-2 bg-lima text-carbon font-bold text-sm px-5 py-2 rounded-full">
+              Precio de socio fundador + primer mes gratis
+            </span>
+          </div>
           <p className="text-center text-xs text-carbon/30 mb-14">Sin permanencia. Cancela cuando quieras.</p>
 
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
@@ -333,9 +369,12 @@ export default function BecomeAPartnerPage() {
                 )}
                 <h3 className="font-montserrat font-bold text-xl mb-0.5">{plan.name}</h3>
                 <p className={`text-xs mb-4 ${plan.popular ? 'text-white/40' : 'text-carbon/40'}`}>{plan.description}</p>
-                <div className="flex items-baseline gap-1 mb-6">
-                  <span className="font-montserrat font-extrabold text-3xl">{plan.price}</span>
-                  <span className={`text-sm ${plan.popular ? 'text-white/40' : 'text-carbon/40'}`}>MXN/mes</span>
+                <div className="mb-6">
+                  <span className={`text-sm line-through ${plan.popular ? 'text-white/40' : 'text-carbon/40'}`}>{plan.originalPrice}</span>
+                  <div className="flex items-baseline gap-1">
+                    <span className={`font-montserrat font-extrabold text-3xl ${plan.popular ? 'text-lima' : 'text-lima-700'}`}>{plan.price}</span>
+                    <span className={`text-sm ${plan.popular ? 'text-white/40' : 'text-carbon/40'}`}>MXN/mes</span>
+                  </div>
                 </div>
                 <ul className="space-y-3">
                   {plan.features.map((f) => (
@@ -396,12 +435,18 @@ export default function BecomeAPartnerPage() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl p-4">
+                  {error}
+                </div>
+              )}
               <div className="grid sm:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-sm font-medium text-carbon/70 mb-1.5">
                     Nombre del negocio
                   </label>
                   <input
+                    name="negocio"
                     type="text"
                     required
                     className="w-full px-4 py-3 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm transition-colors"
@@ -413,6 +458,7 @@ export default function BecomeAPartnerPage() {
                     Nombre del contacto
                   </label>
                   <input
+                    name="contacto"
                     type="text"
                     required
                     className="w-full px-4 py-3 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm transition-colors"
@@ -424,6 +470,7 @@ export default function BecomeAPartnerPage() {
                 <div>
                   <label className="block text-sm font-medium text-carbon/70 mb-1.5">Email</label>
                   <input
+                    name="email"
                     type="email"
                     required
                     className="w-full px-4 py-3 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm transition-colors"
@@ -435,6 +482,7 @@ export default function BecomeAPartnerPage() {
                     Teléfono
                   </label>
                   <input
+                    name="telefono"
                     type="tel"
                     className="w-full px-4 py-3 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm transition-colors"
                     placeholder="449 123 4567"
@@ -444,6 +492,7 @@ export default function BecomeAPartnerPage() {
               <div>
                 <label className="block text-sm font-medium text-carbon/70 mb-1.5">Categoría</label>
                 <select
+                  name="categoria"
                   required
                   className="w-full px-4 py-3 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm transition-colors"
                 >
@@ -460,6 +509,7 @@ export default function BecomeAPartnerPage() {
                   Mensaje (opcional)
                 </label>
                 <textarea
+                  name="mensaje"
                   rows={3}
                   className="w-full px-4 py-3 rounded-xl bg-arena border border-arena-dark/30 focus:border-carbon focus:outline-none text-sm resize-none transition-colors"
                   placeholder="Cuéntanos sobre tu negocio..."
@@ -467,10 +517,11 @@ export default function BecomeAPartnerPage() {
               </div>
               <button
                 type="submit"
-                className="w-full bg-lima text-carbon font-bold py-3.5 rounded-full text-lg hover:bg-lima-400 transition-all hover:shadow-lg hover:shadow-lima/25 flex items-center justify-center gap-2"
+                disabled={submitting}
+                className="w-full bg-lima text-carbon font-bold py-3.5 rounded-full text-lg hover:bg-lima-400 transition-all hover:shadow-lg hover:shadow-lima/25 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Enviar solicitud
-                <IconArrowRight size={20} />
+                {submitting ? 'Enviando...' : 'Enviar solicitud'}
+                {!submitting && <IconArrowRight size={20} />}
               </button>
             </form>
           )}
