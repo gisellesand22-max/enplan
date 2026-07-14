@@ -4,6 +4,24 @@
 
 export type PlanNegocio = 'basico' | 'pro' | 'premium'
 
+export interface Horario {
+  abre: string
+  cierra: string
+  cerrado: boolean
+}
+
+export const DIAS: { key: string; label: string; short: string }[] = [
+  { key: 'lunes', label: 'Lunes', short: 'Lun' },
+  { key: 'martes', label: 'Martes', short: 'Mar' },
+  { key: 'miercoles', label: 'Miércoles', short: 'Mié' },
+  { key: 'jueves', label: 'Jueves', short: 'Jue' },
+  { key: 'viernes', label: 'Viernes', short: 'Vie' },
+  { key: 'sabado', label: 'Sábado', short: 'Sáb' },
+  { key: 'domingo', label: 'Domingo', short: 'Dom' },
+]
+
+export const MAX_FOTOS = 6
+
 export type TipoPromo = 'porcentaje' | '2x1' | 'beneficio_fijo' | 'clase' | 'servicio'
 
 export type EstadoVisita = 'usada' | 'activa' | 'expirada'
@@ -72,6 +90,8 @@ export interface Negocio {
   plan: PlanNegocio
   logoUrl: string | null
   coverUrl: string | null
+  fotos: string[]
+  horarios: Record<string, Horario>
 }
 
 export interface Visita {
@@ -169,6 +189,16 @@ export const DEMO_NEGOCIO: Negocio = {
   plan: 'pro',
   logoUrl: null,
   coverUrl: null,
+  fotos: [],
+  horarios: {
+    lunes: { abre: '08:00', cierra: '20:00', cerrado: false },
+    martes: { abre: '08:00', cierra: '20:00', cerrado: false },
+    miercoles: { abre: '08:00', cierra: '20:00', cerrado: false },
+    jueves: { abre: '08:00', cierra: '20:00', cerrado: false },
+    viernes: { abre: '08:00', cierra: '21:00', cerrado: false },
+    sabado: { abre: '09:00', cierra: '21:00', cerrado: false },
+    domingo: { abre: '10:00', cierra: '16:00', cerrado: false },
+  },
 }
 
 export const DEMO_PROMOS: Promo[] = [

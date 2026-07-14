@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import {
   DEMO_NEGOCIO,
   DEMO_PROMOS,
+  MAX_FOTOS,
   type Negocio,
   type PlanNegocio,
   type Promo,
@@ -19,6 +20,8 @@ type Store = {
   promos: Promo[]
   updateNegocio: (patch: Partial<Negocio>) => void
   setPlan: (plan: PlanNegocio) => void
+  addFoto: (dataUrl: string) => void
+  removeFoto: (index: number) => void
   addPromo: (promo: Omit<Promo, 'id'>) => void
   updatePromo: (id: string, patch: Partial<Promo>) => void
   togglePromo: (id: string) => void
@@ -41,7 +44,7 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
       const raw = localStorage.getItem(KEY)
       if (raw) {
         const parsed = JSON.parse(raw)
-        if (parsed.negocio) setNegocio(parsed.negocio)
+        if (parsed.negocio) setNegocio(prev => ({ ...prev, ...parsed.negocio }))
         if (parsed.promos) setPromos(parsed.promos)
       }
     } catch {
@@ -62,6 +65,10 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
     promos,
     updateNegocio: (patch) => setNegocio((n) => ({ ...n, ...patch })),
     setPlan: (plan) => setNegocio((n) => ({ ...n, plan })),
+    addFoto: (dataUrl) =>
+      setNegocio((n) => n.fotos.length >= MAX_FOTOS ? n : ({ ...n, fotos: [...n.fotos, dataUrl] })),
+    removeFoto: (index) =>
+      setNegocio((n) => ({ ...n, fotos: n.fotos.filter((_, i) => i !== index) })),
     addPromo: (promo) =>
       setPromos((p) => [...p, { ...promo, id: `p${Date.now()}` }]),
     updatePromo: (id, patch) =>

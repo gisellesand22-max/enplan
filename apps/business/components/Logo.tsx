@@ -1,5 +1,6 @@
 interface LogoProps {
   size?: 'sm' | 'md' | 'lg'
+  dark?: boolean
   className?: string
 }
 
@@ -15,10 +16,10 @@ const dotSizes = {
   lg: 'w-4 h-4',
 }
 
-export function Logo({ size = 'md', className = '' }: LogoProps) {
+export function Logo({ size = 'md', dark = false, className = '' }: LogoProps) {
   return (
     <span
-      className={`font-montserrat font-extrabold tracking-tight text-carbon inline-flex items-baseline ${sizes[size]} ${className}`}
+      className={`font-montserrat font-extrabold tracking-tight inline-flex items-baseline ${dark ? 'text-white' : 'text-carbon'} ${sizes[size]} ${className}`}
     >
       enplan
       <span
