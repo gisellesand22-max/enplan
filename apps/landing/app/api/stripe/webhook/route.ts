@@ -54,15 +54,16 @@ export async function POST(request: Request) {
     }
 
     case 'invoice.payment_failed': {
-      const invoice = event.data.object as Stripe.Invoice
-      if (invoice.subscription) {
+      const invoiceData = event.data.object as unknown as Record<string, unknown>
+      const subscriptionId = invoiceData.subscription as string | null
+      if (subscriptionId) {
         await supabase
           .from('suscripciones')
           .update({
             estado: 'past_due',
             updated_at: new Date().toISOString(),
           })
-          .eq('stripe_subscription_id', invoice.subscription as string)
+          .eq('stripe_subscription_id', subscriptionId)
       }
       break
     }
@@ -75,6 +76,7 @@ async function upsertSubscription(subscription: Stripe.Subscription, email: stri
   const plan = subscription.metadata?.plan || 'basico'
   const negocio = subscription.metadata?.negocio || ''
   const item = subscription.items.data[0]
+  const sub = subscription as unknown as Record<string, unknown>
 
   const data = {
     stripe_customer_id: subscription.customer as string,
@@ -84,8 +86,8 @@ async function upsertSubscription(subscription: Stripe.Subscription, email: stri
     plan,
     estado: subscription.status === 'trialing' ? 'trial' : subscription.status === 'active' ? 'activa' : subscription.status,
     precio_mensual: item?.price?.unit_amount || 0,
-    periodo_inicio: new Date((subscription.current_period_start as number) * 1000).toISOString(),
-    periodo_fin: new Date((subscription.current_period_end as number) * 1000).toISOString(),
+    periodo_inicio: sub.current_period_start ? new Date((sub.current_period_start as number) * 1000).toISOString() : null,
+    periodo_fin: sub.current_period_end ? new Date((sub.current_period_end as number) * 1000).toISOString() : null,
     updated_at: new Date().toISOString(),
   }
 
