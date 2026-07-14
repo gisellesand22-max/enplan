@@ -15,7 +15,9 @@
     "react-dom": "^18.3.0",
     "@tabler/icons-react": "^3.28.0",
     "@enplan/ui": "*",
-    "@enplan/shared": "*"
+    "@enplan/shared": "*",
+    "@supabase/supabase-js": "^2.49.0",
+    "stripe": "^17.0.0"
   },
   "devDependencies": {
     "typescript": "^5.7.0",

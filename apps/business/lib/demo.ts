@@ -119,14 +119,14 @@ export const PLANES: {
   {
     id: 'basico',
     nombre: 'Básico',
-    precio: 499,
+    precio: 399,
     descripcion: 'Para probar el concepto',
     features: ['1 promoción activa', 'Perfil en directorio', 'Panel de inicio'],
   },
   {
     id: 'pro',
     nombre: 'Pro',
-    precio: 999,
+    precio: 799,
     descripcion: 'El más elegido',
     popular: true,
     features: [
@@ -139,7 +139,7 @@ export const PLANES: {
   {
     id: 'premium',
     nombre: 'Premium',
-    precio: 1799,
+    precio: 1499,
     descripcion: 'Para dominar tu categoría',
     features: [
       'Promos ilimitadas',

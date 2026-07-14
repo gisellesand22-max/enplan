@@ -1,11 +1,13 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useCallback } from 'react'
 import {
   IconCamera,
   IconBuildingStore,
   IconCheck,
   IconCreditCard,
+  IconExternalLink,
+  IconLoader2,
   IconPlus,
   IconTrash,
   IconX,
@@ -64,10 +66,18 @@ export default function PerfilPage() {
   const { negocio, updateNegocio, setPlan, addFoto, removeFoto } = useStore()
   const [saved, setSaved] = useState(false)
   const [pendingPlan, setPendingPlan] = useState<PlanNegocio | null>(null)
+  const [changingPlan, setChangingPlan] = useState(false)
+  const [portalLoading, setPortalLoading] = useState(false)
+  const [planError, setPlanError] = useState<string | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const logoRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
   const fotosRef = useRef<HTMLInputElement>(null)
+
+  // TODO: These come from Supabase auth session once real auth is wired up.
+  // For now they're null, which triggers the demo fallback in the UI.
+  const stripeCustomerId: string | null = null
+  const stripeSubscriptionId: string | null = null
 
   async function handleImage(
     file: File,
@@ -124,10 +134,51 @@ export default function PerfilPage() {
     setTimeout(() => setSaved(false), 2000)
   }
 
-  function confirmPlanChange() {
-    if (pendingPlan) {
+  const confirmPlanChange = useCallback(async () => {
+    if (!pendingPlan) return
+
+    if (!stripeSubscriptionId) {
       setPlan(pendingPlan)
       setPendingPlan(null)
+      return
+    }
+
+    setChangingPlan(true)
+    setPlanError(null)
+    try {
+      const res = await fetch('/api/stripe/change-plan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subscriptionId: stripeSubscriptionId,
+          newPlan: pendingPlan,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Error al cambiar de plan')
+      setPlan(pendingPlan)
+      setPendingPlan(null)
+    } catch (err) {
+      setPlanError(err instanceof Error ? err.message : 'Error al cambiar de plan')
+    } finally {
+      setChangingPlan(false)
+    }
+  }, [pendingPlan, stripeSubscriptionId, setPlan])
+
+  async function openPortal() {
+    if (!stripeCustomerId) return
+    setPortalLoading(true)
+    try {
+      const res = await fetch('/api/stripe/portal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customerId: stripeCustomerId }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      window.location.href = data.url
+    } catch {
+      setPortalLoading(false)
     }
   }
 
@@ -519,37 +570,62 @@ export default function PerfilPage() {
 
         {/* Plan change confirmation */}
         {pendingPlan && pendingPlan !== negocio.plan && (
-          <div className="mt-3 flex items-center justify-between rounded-xl bg-lima/10 px-4 py-3">
+          <div className="mt-3 flex flex-col gap-2 rounded-xl bg-lima/10 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-carbon">
               ¿Cambiar a{' '}
               <span className="font-bold">
                 Plan {PLANES.find((p) => p.id === pendingPlan)?.nombre}
               </span>
-              ? Esto modificará tu suscripción.
+              ?{stripeSubscriptionId
+                ? ' Se aplicará prorrateo a tu próxima factura.'
+                : ' Esto modificará tu suscripción.'}
             </p>
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => setPendingPlan(null)}
+                onClick={() => { setPendingPlan(null); setPlanError(null) }}
                 className="rounded-lg px-3 py-1.5 text-sm font-medium text-carbon/50 hover:text-carbon"
+                disabled={changingPlan}
               >
                 Cancelar
               </button>
               <button
                 type="button"
                 onClick={confirmPlanChange}
-                className="rounded-lg bg-carbon px-4 py-1.5 text-sm font-medium text-white hover:bg-carbon-600"
+                disabled={changingPlan}
+                className="inline-flex items-center gap-2 rounded-lg bg-carbon px-4 py-1.5 text-sm font-medium text-white hover:bg-carbon-600 disabled:opacity-50"
               >
+                {changingPlan && <IconLoader2 size={14} className="animate-spin" />}
                 Confirmar
               </button>
             </div>
           </div>
         )}
 
-        <p className="mt-3 flex items-center gap-2 text-sm text-carbon/35">
-          <IconCreditCard size={17} />
-          Gestión de pagos y facturas disponible próximamente vía Stripe
-        </p>
+        {planError && (
+          <p className="mt-2 text-sm text-red-500">{planError}</p>
+        )}
+
+        {/* Stripe portal */}
+        {stripeCustomerId ? (
+          <button
+            type="button"
+            onClick={openPortal}
+            disabled={portalLoading}
+            className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-carbon/50 transition-colors hover:text-carbon disabled:opacity-50"
+          >
+            {portalLoading
+              ? <IconLoader2 size={17} className="animate-spin" />
+              : <IconCreditCard size={17} />}
+            Gestionar método de pago y facturas
+            <IconExternalLink size={13} />
+          </button>
+        ) : (
+          <p className="mt-3 flex items-center gap-2 text-sm text-carbon/30">
+            <IconCreditCard size={17} />
+            Gestión de pagos disponible cuando tu suscripción esté activa
+          </p>
+        )}
       </div>
 
       {/* Profile preview */}

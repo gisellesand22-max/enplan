@@ -95,7 +95,7 @@ const plans = [
   {
     name: 'Premium',
     originalPrice: '$1,799',
-    price: '$1,500',
+    price: '$1,499',
     description: 'Para dominar tu categoría',
     features: [
       { text: 'Promos ilimitadas', included: true },
