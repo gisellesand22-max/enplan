@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20',
-})
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 const PLANS: Record<string, { priceId: string; name: string }> = {
   basico: { priceId: process.env.STRIPE_PRICE_BASICO!, name: 'Básico' },
