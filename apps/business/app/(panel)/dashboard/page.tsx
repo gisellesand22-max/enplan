@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { IconScan, IconArrowRight, IconPigMoney } from '@tabler/icons-react'
+import { IconTrendingUp, IconTicket, IconScan, IconArrowRight, IconPigMoney } from '@tabler/icons-react'
 import { Badge } from '@enplan/ui'
 import { useStore } from '../../../lib/store'
 import { DEMO_DASHBOARD, calcAhorro } from '../../../lib/demo'
@@ -21,123 +21,92 @@ export default function DashboardPage() {
     : 0
   const ahorroMes = avgAhorro * DEMO_DASHBOARD.totalVisitasMes
 
+  const metrics = [
+    { label: 'Visitas hoy', value: DEMO_DASHBOARD.totalVisitasHoy, icon: IconTrendingUp },
+    { label: 'Esta semana', value: DEMO_DASHBOARD.totalVisitasSemana, icon: IconTrendingUp },
+    { label: 'Este mes', value: DEMO_DASHBOARD.totalVisitasMes, icon: IconTrendingUp },
+    { label: 'Promos activas', value: promosActivas, icon: IconTicket },
+  ]
+
   return (
-    <div className="flex flex-col gap-8">
-      {/* Greeting */}
+    <div className="flex flex-col gap-6">
       <div>
-        <p className="text-xs font-medium uppercase tracking-wider text-carbon/35">
-          Panel de negocio
-        </p>
-        <h1 className="mt-1 font-montserrat text-2xl font-bold text-carbon">
-          Hola, {negocio.nombre.split(' ')[0]}
+        <h1 className="font-montserrat text-2xl font-extrabold">
+          Hola, {negocio.nombre.split(' ')[0]} 👋
         </h1>
+        <p className="text-sm text-carbon/60">Así van tus resultados en enplan.</p>
       </div>
 
-      {/* Hero metric + supporting numbers */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-0">
-        <div className="sm:pr-8">
-          <span className="font-montserrat text-5xl font-bold tabular-nums leading-none text-carbon">
-            {DEMO_DASHBOARD.totalVisitasMes}
+      {/* Metrics */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {metrics.map((m) => (
+          <div key={m.label} className="rounded-card bg-white p-4 shadow-card">
+            <m.icon size={18} className="text-lima-700" />
+            <div className="mt-2 font-montserrat text-3xl font-extrabold leading-none">
+              {m.value}
+            </div>
+            <div className="mt-1 text-xs font-medium text-carbon/50">{m.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Savings generated */}
+      {avgAhorro > 0 && (
+        <div className="flex items-center gap-4 rounded-card bg-lima/15 p-5">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-lima text-carbon">
+            <IconPigMoney size={24} />
           </span>
-          <p className="mt-2 text-sm text-carbon/45">visitas este mes</p>
-        </div>
-        <div className="flex gap-6 sm:border-l sm:border-arena-dark sm:pl-8 sm:pb-1">
           <div>
-            <span className="font-montserrat text-xl font-bold tabular-nums text-carbon">
-              {DEMO_DASHBOARD.totalVisitasSemana}
-            </span>
-            <p className="text-xs text-carbon/35">semana</p>
-          </div>
-          <div>
-            <span className="font-montserrat text-xl font-bold tabular-nums text-carbon">
-              {DEMO_DASHBOARD.totalVisitasHoy}
-            </span>
-            <p className="text-xs text-carbon/35">hoy</p>
-          </div>
-          <div>
-            <span className="font-montserrat text-xl font-bold tabular-nums text-lima-700">
-              {promosActivas}
-            </span>
-            <p className="text-xs text-carbon/35">promos</p>
+            <div className="font-montserrat text-2xl font-extrabold leading-none text-carbon">
+              ${ahorroMes.toLocaleString('es-MX')}
+            </div>
+            <p className="mt-1 text-sm text-carbon/60">
+              Ahorro que le generaste a tus clientes este mes
+            </p>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Action cards row */}
-      <div className="grid gap-3 sm:grid-cols-2">
-        {/* Savings */}
-        {avgAhorro > 0 && (
-          <div className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-card">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-lima/12">
-              <IconPigMoney size={22} className="text-lima-700" />
-            </span>
-            <div>
-              <span className="font-montserrat text-2xl font-bold leading-none text-carbon">
-                ${ahorroMes.toLocaleString('es-MX')}
-              </span>
-              <p className="mt-1 text-xs text-carbon/45">
-                ahorro generado a clientes
-              </p>
-            </div>
+      {/* Quick action */}
+      <Link
+        href="/validar"
+        className="flex items-center justify-between rounded-card bg-carbon p-5 text-white transition-colors hover:bg-carbon-600"
+      >
+        <div className="flex items-center gap-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-lima text-carbon">
+            <IconScan size={22} />
+          </span>
+          <div>
+            <p className="font-montserrat font-bold">Validar un código</p>
+            <p className="text-sm text-white/60">Registra la visita de un cliente</p>
           </div>
-        )}
-
-        {/* Validate CTA */}
-        <Link
-          href="/validar"
-          className="group flex items-center justify-between rounded-2xl bg-carbon p-5 transition-colors hover:bg-carbon-600"
-        >
-          <div className="flex items-center gap-4">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-lima/20">
-              <IconScan size={22} className="text-lima" />
-            </span>
-            <div>
-              <p className="font-montserrat text-sm font-bold text-white">
-                Validar código
-              </p>
-              <p className="text-xs text-white/40">Registra una visita</p>
-            </div>
-          </div>
-          <IconArrowRight
-            size={18}
-            className="text-white/25 transition-transform group-hover:translate-x-1"
-          />
-        </Link>
-      </div>
+        </div>
+        <IconArrowRight size={20} className="text-white/60" />
+      </Link>
 
       {/* Visits today */}
       <div>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-xs font-medium uppercase tracking-wider text-carbon/35">
-            Visitas de hoy
-          </h2>
-          <span className="text-xs text-carbon/30">
-            {DEMO_DASHBOARD.visitas.length} clientes
-          </span>
+          <h2 className="font-montserrat text-lg font-bold">Visitas de hoy</h2>
+          <span className="text-sm text-carbon/50">{DEMO_DASHBOARD.visitas.length} clientes</span>
         </div>
-        <div className="overflow-hidden rounded-2xl bg-white shadow-card">
-          {DEMO_DASHBOARD.visitas.map((v, i) => (
+        <div className="flex flex-col gap-2">
+          {DEMO_DASHBOARD.visitas.map((v) => (
             <div
               key={v.id}
-              className={`flex items-center justify-between px-5 py-3.5 ${
-                i > 0 ? 'border-t border-arena' : ''
-              }`}
+              className="flex items-center justify-between rounded-card bg-white p-4 shadow-card"
             >
               <div className="flex items-center gap-3">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-carbon/[0.04] font-montserrat text-xs font-bold text-carbon/50">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-arena-dark/40 font-montserrat text-sm font-bold text-carbon">
                   {v.userName.charAt(0)}
                 </span>
                 <div>
-                  <p className="text-sm font-medium text-carbon">
-                    {v.userName}
-                  </p>
-                  <p className="text-xs text-carbon/35">{v.promoTitulo}</p>
+                  <p className="text-sm font-semibold text-carbon">{v.userName}</p>
+                  <p className="text-xs text-carbon/50">{v.promoTitulo}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-xs tabular-nums text-carbon/25">
-                  {v.hora}
-                </span>
+                <span className="text-xs text-carbon/40">{v.hora}</span>
                 <Badge status={badgeStatus[v.estado]} />
               </div>
             </div>

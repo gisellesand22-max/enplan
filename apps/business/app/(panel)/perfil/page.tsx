@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useCallback } from 'react'
+import { useRef, useState, useCallback, useEffect } from 'react'
 import {
   IconCamera,
   IconBuildingStore,
@@ -12,9 +12,12 @@ import {
   IconTrash,
   IconX,
   IconClock,
+  IconLock,
 } from '@tabler/icons-react'
 import { Button, Input } from '@enplan/ui'
 import { useStore } from '../../../lib/store'
+import { useAuth } from '../../../lib/auth'
+import { supabase } from '../../../lib/supabase'
 import {
   CATEGORIES,
   DIAS,
@@ -70,14 +73,24 @@ export default function PerfilPage() {
   const [portalLoading, setPortalLoading] = useState(false)
   const [planError, setPlanError] = useState<string | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [passwordLoading, setPasswordLoading] = useState(false)
+  const [passwordMsg, setPasswordMsg] = useState<{ type: 'ok' | 'error'; text: string } | null>(null)
   const logoRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
   const fotosRef = useRef<HTMLInputElement>(null)
 
-  // TODO: These come from Supabase auth session once real auth is wired up.
-  // For now they're null, which triggers the demo fallback in the UI.
-  const stripeCustomerId: string | null = null
-  const stripeSubscriptionId: string | null = null
+  const { session, subscription } = useAuth()
+  const stripeCustomerId = subscription?.stripeCustomerId ?? null
+  const stripeSubscriptionId = subscription?.stripeSubscriptionId ?? null
+  const authToken = session?.access_token
+
+  useEffect(() => {
+    if (subscription?.plan && subscription.plan !== negocio.plan) {
+      setPlan(subscription.plan)
+    }
+  }, [subscription?.plan, negocio.plan, setPlan])
 
   async function handleImage(
     file: File,
@@ -146,9 +159,11 @@ export default function PerfilPage() {
     setChangingPlan(true)
     setPlanError(null)
     try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      if (authToken) headers['Authorization'] = `Bearer ${authToken}`
       const res = await fetch('/api/stripe/change-plan', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           subscriptionId: stripeSubscriptionId,
           newPlan: pendingPlan,
@@ -169,9 +184,11 @@ export default function PerfilPage() {
     if (!stripeCustomerId) return
     setPortalLoading(true)
     try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      if (authToken) headers['Authorization'] = `Bearer ${authToken}`
       const res = await fetch('/api/stripe/portal', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ customerId: stripeCustomerId }),
       })
       const data = await res.json()
@@ -180,6 +197,33 @@ export default function PerfilPage() {
     } catch {
       setPortalLoading(false)
     }
+  }
+
+  async function handlePasswordChange(e: React.FormEvent) {
+    e.preventDefault()
+    if (newPassword.length < 8) {
+      setPasswordMsg({ type: 'error', text: 'Mínimo 8 caracteres' })
+      return
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordMsg({ type: 'error', text: 'Las contraseñas no coinciden' })
+      return
+    }
+    if (!supabase) {
+      setPasswordMsg({ type: 'error', text: 'Auth no configurado' })
+      return
+    }
+    setPasswordLoading(true)
+    setPasswordMsg(null)
+    const { error } = await supabase.auth.updateUser({ password: newPassword })
+    if (error) {
+      setPasswordMsg({ type: 'error', text: error.message })
+    } else {
+      setPasswordMsg({ type: 'ok', text: 'Contraseña actualizada' })
+      setNewPassword('')
+      setConfirmPassword('')
+    }
+    setPasswordLoading(false)
   }
 
   function updateHorario(dia: string, patch: Partial<Horario>) {
@@ -627,6 +671,44 @@ export default function PerfilPage() {
           </p>
         )}
       </div>
+
+      {/* Password change */}
+      {session && (
+        <div className="rounded-2xl bg-white p-6 shadow-card">
+          <div className="mb-4 flex items-center gap-2">
+            <IconLock size={18} className="text-carbon/40" />
+            <h2 className="text-xs font-medium uppercase tracking-wider text-carbon/35">
+              Cambiar contraseña
+            </h2>
+          </div>
+          <form onSubmit={handlePasswordChange} className="flex flex-col gap-3">
+            <Input
+              label="Nueva contraseña"
+              type="password"
+              placeholder="Mínimo 8 caracteres"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+            />
+            <Input
+              label="Confirmar contraseña"
+              type="password"
+              placeholder="Repite la contraseña"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+            {passwordMsg && (
+              <p className={`text-sm ${passwordMsg.type === 'ok' ? 'text-green-600' : 'text-red-500'}`}>
+                {passwordMsg.text}
+              </p>
+            )}
+            <Button type="submit" fullWidth loading={passwordLoading}>
+              Actualizar contraseña
+            </Button>
+          </form>
+        </div>
+      )}
 
       {/* Profile preview */}
       <div>

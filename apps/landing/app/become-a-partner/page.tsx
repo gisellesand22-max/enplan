@@ -145,11 +145,37 @@ const categorias = [
 
 ]
 
+const planIds: Record<string, string> = {
+  'Básico': 'basico',
+  'Pro': 'pro',
+  'Premium': 'premium',
+}
+
 export default function BecomeAPartnerPage() {
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null)
+
+  async function handleCheckout(planName: string) {
+    const planId = planIds[planName]
+    if (!planId) return
+    setCheckoutLoading(planId)
+    try {
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: planId }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      if (data.url) window.location.href = data.url
+    } catch {
+      setError('Error al iniciar el pago. Intenta de nuevo.')
+      setCheckoutLoading(null)
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -397,16 +423,18 @@ export default function BecomeAPartnerPage() {
                     </li>
                   ))}
                 </ul>
-                <a
-                  href="#contacto"
-                  className={`mt-7 block text-center font-semibold py-3 rounded-full text-sm transition-colors ${
+                <button
+                  type="button"
+                  onClick={() => handleCheckout(plan.name)}
+                  disabled={checkoutLoading === planIds[plan.name]}
+                  className={`mt-7 block w-full text-center font-semibold py-3 rounded-full text-sm transition-colors disabled:opacity-50 ${
                     plan.popular
                       ? 'bg-lima text-carbon hover:bg-lima-400'
                       : 'border-2 border-carbon/20 text-carbon hover:border-carbon/40'
                   }`}
                 >
-                  Solicitar demo
-                </a>
+                  {checkoutLoading === planIds[plan.name] ? 'Redirigiendo...' : 'Comenzar gratis'}
+                </button>
               </div>
             ))}
           </div>
