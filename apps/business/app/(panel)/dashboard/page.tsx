@@ -107,7 +107,7 @@ export default function DashboardPage() {
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-xs text-carbon/40">{v.hora}</span>
-                <Badge status={badgeStatus[v.estado]} />
+                <Badge status={badgeStatus[v.estado] || 'activa'} />
               </div>
             </div>
           ))}
