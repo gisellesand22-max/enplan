@@ -49,7 +49,7 @@ export default function MetricasPage() {
   const last = series[series.length - 1]?.value ?? 0
   const prev = series[series.length - 2]?.value ?? 0
   const growth = prev > 0 ? Math.round(((last - prev) / prev) * 100) : 0
-  const best = series.reduce((a, b) => (b.value > a.value ? b : a), series[0])
+  const best = series.reduce((a, b) => (b.value > a!.value ? b : a), series[0])!
 
   const summary = [
     { label: range === 'dia' ? 'Visitas (14 días)' : 'Visitas (6 meses)', value: `${total}`, icon: IconUsers },

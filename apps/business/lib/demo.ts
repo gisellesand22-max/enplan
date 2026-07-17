@@ -258,7 +258,7 @@ export function buildMonthlySeries(): { label: string; value: number }[] {
   return MONTHLY_VISITS.map((value, i) => {
     const d = new Date(today)
     d.setMonth(today.getMonth() - (MONTHLY_VISITS.length - 1 - i))
-    return { label: MONTH_LABELS[d.getMonth()], value }
+    return { label: MONTH_LABELS[d.getMonth()] || '', value }
   })
 }
 

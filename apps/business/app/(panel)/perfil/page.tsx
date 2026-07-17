@@ -198,7 +198,7 @@ export default function PerfilPage() {
       ...negocio.horarios,
       [dia]: { ...negocio.horarios[dia], ...patch },
     }
-    updateNegocio({ horarios: updated })
+    updateNegocio({ horarios: updated as Record<string, Horario> })
   }
 
   return (
