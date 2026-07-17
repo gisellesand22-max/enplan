@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { IconCircleCheck, IconLoader2 } from '@tabler/icons-react'
 import { Logo } from '../../../components/Logo'
@@ -82,7 +82,9 @@ function CompletadoContent() {
 export default function CompletadoPage() {
   return (
     <AuthProvider>
-      <CompletadoContent />
+      <Suspense fallback={null}>
+        <CompletadoContent />
+      </Suspense>
     </AuthProvider>
   )
 }
