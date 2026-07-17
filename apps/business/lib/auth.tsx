@@ -19,8 +19,10 @@ interface AuthCtx {
   loading: boolean
   configured: boolean
   signIn: (email: string, password: string) => Promise<{ error: string | null }>
+  signUp: (email: string, password: string, metadata?: Record<string, string>) => Promise<{ error: string | null }>
   signOut: () => Promise<void>
   refreshSubscription: () => Promise<void>
+  resetPassword: (email: string) => Promise<{ error: string | null }>
 }
 
 const AuthContext = createContext<AuthCtx | null>(null)
@@ -58,9 +60,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return
     }
 
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
+    supabase.auth.getSession().then(async ({ data: { session: s } }) => {
       setSession(s)
-      if (s?.access_token) fetchSubscription(s.access_token)
+      if (s?.access_token) await fetchSubscription(s.access_token)
       setLoading(false)
     })
 
@@ -85,10 +87,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: null }
   }, [])
 
+  const signUp = useCallback(async (email: string, password: string, metadata?: Record<string, string>) => {
+    if (!supabase) return { error: 'Auth no configurado' }
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: metadata },
+    })
+    if (error) return { error: error.message }
+    return { error: null }
+  }, [])
+
   const signOut = useCallback(async () => {
     if (supabase) await supabase.auth.signOut()
     setSession(null)
     setSubscription(null)
+  }, [])
+
+  const resetPassword = useCallback(async (email: string) => {
+    try {
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        return { error: data.error || 'Error enviando email' }
+      }
+      return { error: null }
+    } catch {
+      return { error: 'Error de conexión' }
+    }
   }, [])
 
   const refreshSubscription = useCallback(async () => {
@@ -96,7 +126,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [session, fetchSubscription])
 
   return (
-    <AuthContext.Provider value={{ session, subscription, loading, configured, signIn, signOut, refreshSubscription }}>
+    <AuthContext.Provider value={{ session, subscription, loading, configured, signIn, signUp, signOut, refreshSubscription, resetPassword }}>
       {children}
     </AuthContext.Provider>
   )

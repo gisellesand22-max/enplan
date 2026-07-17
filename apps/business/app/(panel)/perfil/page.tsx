@@ -68,10 +68,10 @@ const DESC_MAX = 280
 export default function PerfilPage() {
   const { negocio, updateNegocio, setPlan, addFoto, removeFoto } = useStore()
   const [saved, setSaved] = useState(false)
-  const [pendingPlan, setPendingPlan] = useState<PlanNegocio | null>(null)
-  const [changingPlan, setChangingPlan] = useState(false)
   const [portalLoading, setPortalLoading] = useState(false)
-  const [planError, setPlanError] = useState<string | null>(null)
+  const [cancelLoading, setCancelLoading] = useState(false)
+  const [cancelConfirm, setCancelConfirm] = useState(false)
+  const [cancelMsg, setCancelMsg] = useState<string | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -146,39 +146,6 @@ export default function PerfilPage() {
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }
-
-  const confirmPlanChange = useCallback(async () => {
-    if (!pendingPlan) return
-
-    if (!stripeSubscriptionId) {
-      setPlan(pendingPlan)
-      setPendingPlan(null)
-      return
-    }
-
-    setChangingPlan(true)
-    setPlanError(null)
-    try {
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-      if (authToken) headers['Authorization'] = `Bearer ${authToken}`
-      const res = await fetch('/api/stripe/change-plan', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          subscriptionId: stripeSubscriptionId,
-          newPlan: pendingPlan,
-        }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Error al cambiar de plan')
-      setPlan(pendingPlan)
-      setPendingPlan(null)
-    } catch (err) {
-      setPlanError(err instanceof Error ? err.message : 'Error al cambiar de plan')
-    } finally {
-      setChangingPlan(false)
-    }
-  }, [pendingPlan, stripeSubscriptionId, setPlan])
 
   async function openPortal() {
     if (!stripeCustomerId) return
@@ -559,96 +526,30 @@ export default function PerfilPage() {
           Cobro automático mensual gestionado por Stripe. Cambia o cancela
           cuando quieras.
         </p>
-        <div className="grid gap-3 sm:grid-cols-3">
-          {PLANES.map((p) => {
-            const active = negocio.plan === p.id
-            const isPending = pendingPlan === p.id
-            return (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => {
-                  if (!active) setPendingPlan(p.id as PlanNegocio)
-                }}
-                className={`rounded-2xl border-2 p-4 text-left transition-colors ${
-                  active
-                    ? 'border-carbon bg-white shadow-card'
-                    : isPending
-                      ? 'border-lima bg-lima/5 shadow-card'
-                      : 'border-arena-dark bg-white/60 hover:border-carbon/30'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-montserrat font-bold">{p.nombre}</span>
-                  {active && (
-                    <span className="rounded-full bg-lima px-2 py-0.5 text-[10px] font-bold uppercase text-carbon">
-                      Actual
-                    </span>
-                  )}
-                </div>
-                <div className="mt-0.5 font-montserrat text-xl font-bold">
-                  ${p.precio.toLocaleString('es-MX')}
-                  <span className="text-xs font-medium text-carbon/40">
-                    {' '}
-                    /mes
-                  </span>
-                </div>
-                <ul className="mt-2 flex flex-col gap-1">
-                  {p.features.map((f) => (
-                    <li
-                      key={f}
-                      className="flex items-start gap-1.5 text-xs text-carbon/50"
-                    >
-                      <IconCheck
-                        size={12}
-                        className="mt-0.5 shrink-0 text-lima-700"
-                      />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-              </button>
-            )
-          })}
-        </div>
 
-        {/* Plan change confirmation */}
-        {pendingPlan && pendingPlan !== negocio.plan && (
-          <div className="mt-3 flex flex-col gap-2 rounded-xl bg-lima/10 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-carbon">
-              ¿Cambiar a{' '}
-              <span className="font-bold">
-                Plan {PLANES.find((p) => p.id === pendingPlan)?.nombre}
-              </span>
-              ?{stripeSubscriptionId
-                ? ' Se aplicará prorrateo a tu próxima factura.'
-                : ' Esto modificará tu suscripción.'}
-            </p>
+        {/* Current plan summary */}
+        <div className="flex items-center justify-between rounded-2xl border-2 border-carbon bg-white p-5 shadow-card">
+          <div>
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => { setPendingPlan(null); setPlanError(null) }}
-                className="rounded-lg px-3 py-1.5 text-sm font-medium text-carbon/50 hover:text-carbon"
-                disabled={changingPlan}
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                onClick={confirmPlanChange}
-                disabled={changingPlan}
-                className="inline-flex items-center gap-2 rounded-lg bg-carbon px-4 py-1.5 text-sm font-medium text-white hover:bg-carbon-600 disabled:opacity-50"
-              >
-                {changingPlan && <IconLoader2 size={14} className="animate-spin" />}
-                Confirmar
-              </button>
+              <span className="font-montserrat text-lg font-bold">
+                Plan {PLANES.find((p) => p.id === negocio.plan)?.nombre}
+              </span>
+              <span className="rounded-full bg-lima px-2 py-0.5 text-[10px] font-bold uppercase text-carbon">
+                Actual
+              </span>
             </div>
+            <p className="mt-0.5 font-montserrat text-xl font-bold">
+              ${PLANES.find((p) => p.id === negocio.plan)?.precio.toLocaleString('es-MX')}
+              <span className="text-xs font-medium text-carbon/40"> /mes</span>
+            </p>
           </div>
-        )}
-
-        {planError && (
-          <p className="mt-2 text-sm text-red-500">{planError}</p>
-        )}
+          <a
+            href="/cambiar-plan"
+            className="rounded-xl bg-carbon px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-carbon/80"
+          >
+            Cambiar plan
+          </a>
+        </div>
 
         {/* Stripe portal */}
         {stripeCustomerId ? (
@@ -669,6 +570,70 @@ export default function PerfilPage() {
             <IconCreditCard size={17} />
             Gestión de pagos disponible cuando tu suscripción esté activa
           </p>
+        )}
+
+        {/* Cancel subscription */}
+        {stripeSubscriptionId && (
+          <div className="mt-4">
+            {cancelMsg && (
+              <p className="mb-2 rounded-lg bg-lima/10 px-3 py-2 text-sm text-carbon">
+                {cancelMsg}
+              </p>
+            )}
+            {!cancelConfirm ? (
+              <button
+                type="button"
+                onClick={() => setCancelConfirm(true)}
+                className="text-sm font-medium text-red-400 transition-colors hover:text-red-600"
+              >
+                Cancelar plan
+              </button>
+            ) : (
+              <div className="flex flex-col gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+                <p className="text-sm text-carbon">
+                  Tu plan seguirá activo hasta el final del periodo de facturación. Después de eso, no se realizarán más cobros.
+                </p>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => { setCancelConfirm(false); setCancelMsg(null) }}
+                    className="rounded-lg px-3 py-1.5 text-sm font-medium text-carbon/50 hover:text-carbon"
+                    disabled={cancelLoading}
+                  >
+                    No, mantener plan
+                  </button>
+                  <button
+                    type="button"
+                    disabled={cancelLoading}
+                    onClick={async () => {
+                      setCancelLoading(true)
+                      try {
+                        const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+                        if (authToken) headers['Authorization'] = `Bearer ${authToken}`
+                        const res = await fetch('/api/stripe/cancel-subscription', {
+                          method: 'POST',
+                          headers,
+                          body: JSON.stringify({ subscriptionId: stripeSubscriptionId }),
+                        })
+                        const data = await res.json()
+                        if (!res.ok) throw new Error(data.error)
+                        setCancelConfirm(false)
+                        setCancelMsg('Tu plan se cancelará al final del periodo actual. No se harán más cobros.')
+                      } catch (err) {
+                        setCancelMsg(err instanceof Error ? err.message : 'Error al cancelar')
+                      } finally {
+                        setCancelLoading(false)
+                      }
+                    }}
+                    className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-red-600 disabled:opacity-50"
+                  >
+                    {cancelLoading && <IconLoader2 size={14} className="animate-spin" />}
+                    Sí, cancelar plan
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         )}
       </div>
 

@@ -9,6 +9,26 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
 )
 
+let portalConfigId: string | null = null
+
+async function getPortalConfig() {
+  if (portalConfigId) return portalConfigId
+
+  const config = await stripe.billingPortal.configurations.create({
+    business_profile: {
+      headline: 'enplan. — Gestiona tu suscripción',
+    },
+    features: {
+      payment_method_update: { enabled: true },
+      invoice_history: { enabled: true },
+      subscription_cancel: { enabled: false },
+      subscription_update: { enabled: false },
+    },
+  })
+  portalConfigId = config.id
+  return portalConfigId
+}
+
 async function verifyUser(request: Request) {
   const authHeader = request.headers.get('Authorization')
   if (!authHeader?.startsWith('Bearer ')) return null
@@ -45,9 +65,12 @@ export async function POST(request: Request) {
     const origin =
       request.headers.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3002'
 
+    const configId = await getPortalConfig()
+
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
       return_url: `${origin}/perfil`,
+      configuration: configId,
     })
 
     return NextResponse.json({ url: session.url })

@@ -7,12 +7,19 @@ import { TopBar } from '../../components/TopBar'
 import { AuthProvider, useAuth } from '../../lib/auth'
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { session, loading, configured } = useAuth()
+  const { session, subscription, loading, configured } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (!loading && configured && !session) router.replace('/login')
-  }, [loading, configured, session, router])
+    if (loading) return
+    if (configured && !session) {
+      router.replace('/login')
+      return
+    }
+    if (configured && session && !subscription) {
+      router.replace('/elegir-plan')
+    }
+  }, [loading, configured, session, subscription, router])
 
   if (loading) {
     return (
@@ -23,6 +30,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   }
 
   if (configured && !session) return null
+  if (configured && session && !subscription) return null
 
   return <>{children}</>
 }
