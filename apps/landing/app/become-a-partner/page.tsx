@@ -17,29 +17,9 @@ import {
   IconClock,
   IconTrendingUp,
 } from '@tabler/icons-react'
+import { ComparisonChart } from '../../components/ui/comparison-chart'
 
-const benefits = [
-  {
-    icon: IconChartBar,
-    title: 'Clientes verificados',
-    description:
-      'Cada visita se registra automáticamente. Sabrás exactamente cuántos clientes te llegaron por enplan.',
-  },
-  {
-    icon: IconShieldCheck,
-    title: 'Dashboard en tiempo real',
-    description:
-      'Ve activaciones, validaciones y métricas desde cualquier dispositivo. Sin app, solo un navegador.',
-  },
-  {
-    icon: IconGift,
-    title: 'Primer mes gratis',
-    description:
-      'Prueba sin riesgo. Si no te funciona, cancelas sin penalización ni cargos ocultos.',
-  },
-]
-
-const howItWorksForBusiness = [
+const howItWorksSteps = [
   {
     icon: IconUsers,
     step: '01',
@@ -57,6 +37,24 @@ const howItWorksForBusiness = [
     step: '03',
     title: 'Tú creces',
     description: 'Cada visita queda registrada. Ves tus métricas en tiempo real y tomas mejores decisiones.',
+  },
+  {
+    icon: IconChartBar,
+    step: '04',
+    title: 'Clientes verificados',
+    description: 'Cada visita se registra automáticamente. Sabrás exactamente cuántos clientes te llegaron por enplan.',
+  },
+  {
+    icon: IconShieldCheck,
+    step: '05',
+    title: 'Dashboard en tiempo real',
+    description: 'Ve activaciones, validaciones y métricas desde cualquier dispositivo. Sin app, solo un navegador.',
+  },
+  {
+    icon: IconGift,
+    step: '06',
+    title: 'Primer mes gratis',
+    description: 'Prueba sin riesgo. Si no te funciona, cancelas sin penalización ni cargos ocultos.',
   },
 ]
 
@@ -156,26 +154,7 @@ export default function BecomeAPartnerPage() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [openFaq, setOpenFaq] = useState<number | null>(null)
-  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null)
-
-  async function handleCheckout(planName: string) {
-    const planId = planIds[planName]
-    if (!planId) return
-    setCheckoutLoading(planId)
-    try {
-      const res = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: planId }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error)
-      if (data.url) window.location.href = data.url
-    } catch {
-      setError('Error al iniciar el pago. Intenta de nuevo.')
-      setCheckoutLoading(null)
-    }
-  }
+  const registroUrl = process.env.NEXT_PUBLIC_BUSINESS_URL || 'https://negocios.enplan.app'
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -213,11 +192,49 @@ export default function BecomeAPartnerPage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-24 pb-16 px-6 md:px-8 relative overflow-hidden">
-        <div className="absolute top-20 left-0 w-96 h-96 bg-lima/10 rounded-full blur-3xl -z-10" />
-        <div className="absolute bottom-0 right-0 w-72 h-72 bg-lima/5 rounded-full blur-3xl -z-10" />
+      <section className="pt-24 pb-16 px-6 md:px-8 relative overflow-hidden min-h-[80vh] flex items-center">
+        {/* Floating person avatars */}
+        {[
+          { top: '10%', left: '8%', size: 40 },
+          { top: '6%', left: '30%', size: 32 },
+          { top: '12%', right: '12%', size: 44 },
+          { top: '8%', right: '32%', size: 36 },
+          { top: '35%', left: '4%', size: 36 },
+          { top: '40%', right: '3%', size: 40 },
+          { top: '65%', left: '10%', size: 32 },
+          { top: '70%', left: '28%', size: 28 },
+          { top: '68%', right: '8%', size: 36 },
+          { top: '75%', right: '28%', size: 40 },
+          { top: '22%', left: '18%', size: 28 },
+          { top: '82%', left: '45%', size: 32 },
+          { top: '55%', right: '15%', size: 28 },
+          { top: '58%', right: '22%', size: 32 },
+        ].map((av, i) => (
+          <div
+            key={i}
+            style={{
+              position: 'absolute',
+              top: av.top,
+              left: av.left,
+              right: av.right,
+              width: av.size,
+              height: av.size,
+              backgroundColor: '#CDD917',
+              opacity: 0.15,
+              borderRadius: 10,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <svg width={av.size * 0.5} height={av.size * 0.5} viewBox="0 0 24 24" fill="none" stroke="#2B2B23" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+        ))}
 
-        <div className="container-landing mx-auto text-center">
+        <div className="container-landing mx-auto text-center relative z-10">
           <div className="inline-flex items-center gap-2 bg-lima text-carbon font-bold text-sm px-5 py-2 rounded-full mb-8">
             <IconClock size={16} />
             Solo 50 cupos de socio fundador
@@ -246,41 +263,31 @@ export default function BecomeAPartnerPage() {
         </div>
       </section>
 
-      {/* How it works for business */}
-      <section className="section-padding bg-carbon text-white">
+      <ComparisonChart />
+
+      {/* How it works — 6 steps */}
+      <section className="section-padding bg-lima/10">
         <div className="container-landing mx-auto">
           <div className="text-center mb-14">
-            <span className="text-sm font-semibold text-lima uppercase tracking-wider">Así funciona para ti</span>
-            <h2 className="font-montserrat font-bold text-3xl md:text-4xl mt-3 text-white">
+            <span className="text-sm font-semibold text-carbon/40 uppercase tracking-widest">Así funciona para ti</span>
+            <h2 className="font-montserrat font-bold text-3xl md:text-4xl mt-3 text-carbon">
               Clientes reales, datos reales
             </h2>
+            <p className="text-carbon/50 max-w-2xl mx-auto mt-4 text-sm md:text-base">
+              De la activación a los resultados en 6 pasos simples.
+            </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {howItWorksForBusiness.map((step) => (
-              <div key={step.step} className="bg-white/5 border border-white/10 rounded-2xl p-7">
-                <span className="font-montserrat font-extrabold text-3xl text-lima/30">{step.step}</span>
-                <div className="w-12 h-12 bg-lima rounded-xl flex items-center justify-center my-4">
-                  <step.icon size={24} className="text-carbon" />
+          <div className="grid md:grid-cols-3 gap-5">
+            {howItWorksSteps.map((step) => (
+              <div key={step.step} className="bg-arena rounded-2xl p-6 md:p-7 border border-arena-dark/15">
+                <div className="flex items-start justify-between mb-6">
+                  <div className="w-12 h-12 rounded-xl border border-arena-dark/20 flex items-center justify-center">
+                    <step.icon size={22} className="text-carbon" />
+                  </div>
+                  <span className="text-xs font-bold bg-carbon text-white px-3 py-1 rounded-full">{step.step}</span>
                 </div>
-                <h3 className="font-montserrat font-bold text-lg mb-2">{step.title}</h3>
-                <p className="text-sm text-white/50 leading-relaxed">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits */}
-      <section className="section-padding">
-        <div className="container-landing mx-auto">
-          <div className="grid md:grid-cols-3 gap-6">
-            {benefits.map((b) => (
-              <div key={b.title} className="bg-white rounded-2xl p-7 border border-arena-dark/20 hover:shadow-lg transition-shadow">
-                <div className="w-14 h-14 bg-lima/15 rounded-2xl flex items-center justify-center mb-5">
-                  <b.icon size={28} className="text-carbon" />
-                </div>
-                <h3 className="font-montserrat font-bold text-xl mb-2">{b.title}</h3>
-                <p className="text-carbon/50 text-sm leading-relaxed">{b.description}</p>
+                <h3 className="font-montserrat font-bold text-base md:text-lg text-carbon mb-2">{step.title}</h3>
+                <p className="text-sm text-carbon/45 leading-relaxed">{step.description}</p>
               </div>
             ))}
           </div>
@@ -423,18 +430,16 @@ export default function BecomeAPartnerPage() {
                     </li>
                   ))}
                 </ul>
-                <button
-                  type="button"
-                  onClick={() => handleCheckout(plan.name)}
-                  disabled={checkoutLoading === planIds[plan.name]}
-                  className={`mt-7 block w-full text-center font-semibold py-3 rounded-full text-sm transition-colors disabled:opacity-50 ${
+                <a
+                  href={`${registroUrl}/registro`}
+                  className={`mt-7 block w-full text-center font-semibold py-3 rounded-full text-sm transition-colors ${
                     plan.popular
                       ? 'bg-lima text-carbon hover:bg-lima-400'
                       : 'border-2 border-carbon/20 text-carbon hover:border-carbon/40'
                   }`}
                 >
-                  {checkoutLoading === planIds[plan.name] ? 'Redirigiendo...' : 'Comenzar gratis'}
-                </button>
+                  Comenzar gratis
+                </a>
               </div>
             ))}
           </div>
@@ -594,18 +599,18 @@ export default function BecomeAPartnerPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="section-padding bg-carbon">
-        <div className="container-landing mx-auto text-center">
-          <Logo size="lg" className="!text-white justify-center mb-6" />
-          <h2 className="font-montserrat font-bold text-2xl md:text-3xl text-white mb-3">
+      <section className="relative overflow-hidden bg-gradient-to-b from-lima-100 via-lima/30 to-lima-200 py-24 md:py-32">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-lima/20 rounded-full blur-[150px]" />
+        <div className="container-landing mx-auto relative text-center">
+          <h2 className="font-montserrat font-bold text-3xl md:text-5xl lg:text-6xl text-carbon mb-5 leading-tight">
             Tu lugar como socio fundador te espera
           </h2>
-          <p className="text-white/40 max-w-md mx-auto mb-8 text-sm">
+          <p className="text-carbon/50 max-w-lg mx-auto mb-10 text-base md:text-lg">
             Solo 50 negocios en el lanzamiento de Aguascalientes. Primer mes gratis, sin permanencia.
           </p>
           <a
             href="#contacto"
-            className="bg-lima text-carbon font-bold px-8 py-4 rounded-full text-lg hover:bg-lima-400 transition-all hover:shadow-lg hover:shadow-lima/25 inline-flex items-center gap-2"
+            className="bg-carbon text-white font-bold px-10 py-4 rounded-full text-lg hover:bg-carbon-700 transition-colors inline-flex items-center gap-2 shadow-lg"
           >
             Asegurar mi lugar
             <IconArrowRight size={20} />

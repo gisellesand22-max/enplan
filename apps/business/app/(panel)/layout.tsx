@@ -43,7 +43,7 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
           <PanelSidebar />
           <div className="flex-1">
             <TopBar />
-            <main className="mx-auto max-w-3xl px-5 pb-24 pt-6 md:pb-10">{children}</main>
+            <main className="mx-auto max-w-6xl px-5 pb-24 pt-6 md:px-8 md:pb-10">{children}</main>
           </div>
           <PanelNav />
         </div>
