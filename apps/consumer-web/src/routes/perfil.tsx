@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Share2, LogOut, Settings, Copy, Check } from "lucide-react";
+import { Share2, LogOut, Settings, Copy, Check, Heart, ChevronRight } from "lucide-react";
 import { MobileShell, Logo } from "@/components/enplan/MobileShell";
+import { MapBackdrop } from "@/components/enplan/MapBackdrop";
 import { enplanActions, useEnplanStore } from "@/lib/enplan-store";
 
 export const Route = createFileRoute("/perfil")({
@@ -21,13 +22,15 @@ const REFERRAL_LINK = `enplan.app/ref/${REFERRAL_HANDLE}`;
 const REFERRAL_COUNT = 0;
 
 function ProfilePage() {
-  const { user, benefits } = useEnplanStore();
+  const { user, benefits, savedPlaces } = useEnplanStore();
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
 
   if (!user) {
     return (
       <MobileShell>
+        <MapBackdrop area="sur" />
+        <div className="relative z-10">
         <header className="flex items-center justify-between px-5 pt-10 pb-2">
           <h1 className="font-display text-[26px] font-bold">Perfil</h1>
           <Logo />
@@ -47,6 +50,7 @@ function ProfilePage() {
               Iniciar sesión
             </Link>
           </div>
+        </div>
         </div>
       </MobileShell>
     );
@@ -87,6 +91,8 @@ function ProfilePage() {
 
   return (
     <MobileShell>
+      <MapBackdrop area="sur" />
+      <div className="relative z-10">
       <header className="flex items-center justify-between px-5 pt-10">
         <Logo />
         <Link
@@ -115,6 +121,25 @@ function ProfilePage() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* Lugares guardados */}
+      <section className="mt-7 px-5">
+        <Link
+          to="/guardados"
+          className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
+        >
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#CDD917]/30">
+            <Heart size={18} className="text-[#2B2B23]" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="font-display text-sm font-bold text-[#2B2B23]">Lugares guardados</p>
+            <p className="text-xs text-[#2B2B23]/55" style={bodyFont}>
+              {savedPlaces.length} {savedPlaces.length === 1 ? "negocio guardado" : "negocios guardados"}
+            </p>
+          </div>
+          <ChevronRight size={18} className="text-[#2B2B23]/40" />
+        </Link>
       </section>
 
       {/* Referidos */}
@@ -169,6 +194,7 @@ function ProfilePage() {
         >
           <LogOut size={15} /> Cerrar sesión
         </button>
+      </div>
       </div>
     </MobileShell>
   );

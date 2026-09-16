@@ -20,6 +20,7 @@ type User = {
 type State = {
   user: User | null;
   benefits: ActiveBenefit[];
+  savedPlaces: string[];
 };
 
 const isBrowser = typeof window !== "undefined";
@@ -29,6 +30,7 @@ const initial: State = {
   benefits: [
     // historic demo (when user logs in we show these)
   ],
+  savedPlaces: [],
 };
 
 let state: State = initial;
@@ -42,7 +44,7 @@ function load() {
   if (!isBrowser) return;
   try {
     const raw = window.localStorage.getItem("enplan-state");
-    if (raw) state = JSON.parse(raw);
+    if (raw) state = { ...initial, ...JSON.parse(raw) };
   } catch {}
 }
 
@@ -120,6 +122,17 @@ export const enplanActions = {
     persist();
     emit();
     return benefit;
+  },
+  toggleSaved(businessId: string) {
+    const isSaved = state.savedPlaces.includes(businessId);
+    state = {
+      ...state,
+      savedPlaces: isSaved
+        ? state.savedPlaces.filter((id) => id !== businessId)
+        : [...state.savedPlaces, businessId],
+    };
+    persist();
+    emit();
   },
 };
 

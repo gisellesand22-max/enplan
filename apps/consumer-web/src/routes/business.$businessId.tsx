@@ -1,8 +1,9 @@
 import { createFileRoute, Link, notFound, useNavigate, useRouter } from "@tanstack/react-router";
-import { MapPin, Phone, Clock, MessageCircle, ArrowLeft } from "lucide-react";
+import { MapPin, Phone, Clock, MessageCircle, ArrowLeft, Users, Heart } from "lucide-react";
 import { BUSINESSES, type Business } from "@/lib/enplan-data";
-import { useEnplanStore } from "@/lib/enplan-store";
+import { enplanActions, useEnplanStore } from "@/lib/enplan-store";
 import { MobileShell, Logo } from "@/components/enplan/MobileShell";
+import { MapBackdrop } from "@/components/enplan/MapBackdrop";
 
 export const Route = createFileRoute("/business/$businessId")({
   loader: ({ params }): { business: Business } => {
@@ -62,7 +63,8 @@ const WA_MESSAGE = "Hola, vi tu negocio en enplan. y me gustaría más informaci
 
 function BusinessPage() {
   const { business } = Route.useLoaderData() as { business: Business };
-  const { user } = useEnplanStore();
+  const { user, savedPlaces } = useEnplanStore();
+  const saved = savedPlaces.includes(business.id);
   const navigate = useNavigate();
 
   const handleActivate = (promoId: string) => {
@@ -85,8 +87,10 @@ function BusinessPage() {
 
   return (
     <MobileShell showNav={false}>
+      <MapBackdrop blur={5} />
+      <div className="relative z-10">
       {/* Top bar with back arrow + logo linking to home */}
-      <div className="relative flex items-center justify-center bg-[#FAF8F3] px-4 py-3">
+      <div className="relative flex items-center justify-center px-4 py-3">
         <button
           type="button"
           onClick={() => navigate({ to: "/" })}
@@ -110,6 +114,20 @@ function BusinessPage() {
         >
           Logo
         </div>
+        <button
+          type="button"
+          onClick={() => enplanActions.toggleSaved(business.id)}
+          aria-label={saved ? "Quitar de guardados" : "Guardar lugar"}
+          aria-pressed={saved}
+          className={`absolute right-3 top-3 flex items-center gap-1.5 rounded-full py-2 pl-2.5 pr-3 shadow-sm transition-transform active:scale-95 ${
+            saved ? "bg-[#CDD917]" : "bg-white/95"
+          }`}
+        >
+          <Heart size={16} className={saved ? "fill-[#2B2B23] text-[#2B2B23]" : "text-[#2B2B23]/80"} />
+          <span className="text-[12px] font-bold text-[#2B2B23]" style={bodyFont}>
+            {saved ? "Guardado" : "Guardar"}
+          </span>
+        </button>
       </div>
 
       <div className="px-4 pt-10">
@@ -161,7 +179,7 @@ function BusinessPage() {
         </div>
 
         {/* Photo gallery */}
-        <h2 className="mt-7 font-display text-base font-bold text-[#2B2B23]">Fotos</h2>
+        <h2 className="mt-7 font-display text-base font-bold text-[#2B2B23]">El lugar...</h2>
         <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
           {[0, 1, 2, 3].map((i) => (
             <div
@@ -196,6 +214,18 @@ function BusinessPage() {
             </div>
           ))}
         </div>
+
+        {/* Usage counter / social proof */}
+        <div className="mb-8 flex items-center gap-3 rounded-2xl bg-[#F3F1E9] p-4">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#CDD917]">
+            <Users size={16} className="text-[#2B2B23]" />
+          </div>
+          <p className="text-[13px] leading-snug text-[#2B2B23]" style={bodyFont}>
+            <span className="font-display font-bold">{business.redemptions} usuarios</span> han
+            visitado este negocio gracias a enplan.
+          </p>
+        </div>
+      </div>
       </div>
     </MobileShell>
   );

@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Menu } from "lucide-react";
 import { BUSINESSES, type Business } from "@/lib/enplan-data";
 import { MobileShell, Logo } from "@/components/enplan/MobileShell";
+import { MapBackdrop } from "@/components/enplan/MapBackdrop";
+import { BusinessCard } from "@/components/enplan/BusinessCard";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -32,8 +34,8 @@ type CatChip = {
 
 const CHIPS: CatChip[] = [
   { key: "Todos", label: "Todos", icon: "/assets/icons/categories/todos.svg" },
-  { key: "Comida", label: "Comida", icon: "/assets/icons/categories/comida.svg", match: (b) => b.category === "Comida" },
-  { key: "Belleza", label: "Belleza", icon: "/assets/icons/categories/belleza.svg", match: (b) => b.category === "Belleza" },
+  { key: "Comida", label: "Comida", icon: "/assets/icons/categories/comida.png", match: (b) => b.category === "Comida" },
+  { key: "Belleza", label: "Belleza", icon: "/assets/icons/categories/belleza.png", match: (b) => b.category === "Belleza" },
   { key: "Fitness", label: "Fitness", icon: "/assets/icons/categories/fitness.svg", match: (b) => b.category === "Fitness" },
   { key: "Ocio", label: "Ocio", icon: "/assets/icons/categories/ocio.svg", match: (b) => b.category === "Ocio" },
   { key: "Tiendas", label: "Tiendas", icon: "/assets/icons/categories/tiendas.svg", match: (b) => b.category === "Tiendas" },
@@ -56,6 +58,8 @@ function HomePage() {
 
   return (
     <MobileShell>
+      <MapBackdrop />
+      <div className="relative z-10">
       <header className="flex items-center justify-between px-5 pt-10 pb-4">
         <Logo />
         <Link
@@ -121,39 +125,7 @@ function HomePage() {
           </div>
         )}
       </section>
-
+      </div>
     </MobileShell>
-  );
-}
-
-
-function BusinessCard({ business }: { business: Business }) {
-  const best = business.promos[0];
-  return (
-    <Link
-      to="/business/$businessId"
-      params={{ businessId: business.id }}
-      className="group block overflow-hidden rounded-2xl bg-white shadow-sm transition-shadow hover:shadow-md"
-    >
-      <div className="relative flex h-[100px] items-center justify-center bg-[#D6D0C4]">
-        <span className="text-[11px] text-[#2B2B23]/50">Foto</span>
-        <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-medium text-[#2B2B23]/70">
-          {business.category}
-        </span>
-      </div>
-      <div className="p-3">
-        <h3 className="line-clamp-2 font-display text-sm font-bold leading-tight text-[#2B2B23]">
-          {business.name}
-        </h3>
-        {best && (
-          <>
-            <span className="mt-2 inline-block rounded-full bg-[#CDD917] px-2 py-0.5 text-[11px] font-bold text-[#2B2B23]">
-              {best.type}
-            </span>
-            <p className="mt-1 line-clamp-1 text-xs text-[#2B2B23]/60">{best.title}</p>
-          </>
-        )}
-      </div>
-    </Link>
   );
 }

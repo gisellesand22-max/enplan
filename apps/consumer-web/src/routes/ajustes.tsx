@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { MobileShell } from "@/components/enplan/MobileShell";
+import { MapBackdrop } from "@/components/enplan/MapBackdrop";
 import { enplanActions, useEnplanStore } from "@/lib/enplan-store";
 
 export const Route = createFileRoute("/ajustes")({
@@ -60,6 +61,8 @@ function AjustesPage() {
 
   return (
     <MobileShell>
+      <MapBackdrop area="centro" />
+      <div className="relative z-10">
       <header className="px-5 pt-10 pb-4">
         <h1 className="font-display text-[26px] font-bold text-[#2B2B23]">Ajustes</h1>
       </header>
@@ -113,6 +116,7 @@ function AjustesPage() {
             No has iniciado sesión
           </p>
         )}
+      </div>
       </div>
     </MobileShell>
   );

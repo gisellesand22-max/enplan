@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Share2, Ticket } from "lucide-react";
 import { MobileShell } from "@/components/enplan/MobileShell";
+import { MapBackdrop } from "@/components/enplan/MapBackdrop";
 import { useEnplanStore, type ActiveBenefit } from "@/lib/enplan-store";
 
 export const Route = createFileRoute("/beneficios")({
@@ -22,10 +23,13 @@ function BenefitsPage() {
   if (!user) {
     return (
       <MobileShell>
+        <MapBackdrop area="norte" />
+        <div className="relative z-10">
         <header className="px-5 pt-10 pb-2">
           <h1 className="font-display text-[22px] font-bold text-[#2B2B23]">Mis beneficios</h1>
         </header>
         <SignedOutState />
+        </div>
       </MobileShell>
     );
   }
@@ -36,6 +40,8 @@ function BenefitsPage() {
 
   return (
     <MobileShell>
+      <MapBackdrop area="norte" />
+      <div className="relative z-10">
       <header className="px-5 pt-10 pb-4">
         <h1 className="font-display text-[22px] font-bold text-[#2B2B23]">Mis beneficios</h1>
       </header>
@@ -70,6 +76,7 @@ function BenefitsPage() {
           </div>
         )}
       </section>
+      </div>
     </MobileShell>
   );
 }

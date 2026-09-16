@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Ticket, User } from "lucide-react";
+import { Home, Ticket, Heart, User } from "lucide-react";
 import type { ReactNode } from "react";
 
 export function Logo({ className = "" }: { className?: string }) {
@@ -19,6 +19,7 @@ export function Logo({ className = "" }: { className?: string }) {
 const TABS = [
   { to: "/", label: "Inicio", icon: Home },
   { to: "/beneficios", label: "Beneficios", icon: Ticket },
+  { to: "/guardados", label: "Guardados", icon: Heart },
   { to: "/perfil", label: "Perfil", icon: User },
 ] as const;
 

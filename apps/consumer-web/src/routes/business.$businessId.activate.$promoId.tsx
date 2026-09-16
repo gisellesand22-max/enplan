@@ -9,6 +9,7 @@ import {
   type ActiveBenefit,
 } from "@/lib/enplan-store";
 import { MobileShell, Logo } from "@/components/enplan/MobileShell";
+import { MapBackdrop } from "@/components/enplan/MapBackdrop";
 
 export const Route = createFileRoute("/business/$businessId/activate/$promoId")({
   head: () => ({
@@ -119,6 +120,8 @@ export function ActivatedView({ benefit }: { benefit: ActiveBenefit }) {
 
   return (
     <MobileShell showNav={false}>
+      <MapBackdrop area="norte" />
+      <div className="relative z-10">
       <header className="flex items-center justify-between px-5 pt-10">
         <Logo />
         <Link to="/" className="text-xs font-medium text-[#2B2B23]/60">
@@ -168,6 +171,7 @@ export function ActivatedView({ benefit }: { benefit: ActiveBenefit }) {
         <Link to="/" className="mt-4 text-xs font-medium text-[#2B2B23]/60">
           Volver al inicio
         </Link>
+      </div>
       </div>
     </MobileShell>
   );

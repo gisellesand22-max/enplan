@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
 import { MobileShell, Logo } from "@/components/enplan/MobileShell";
+import { MapBackdrop } from "@/components/enplan/MapBackdrop";
 import { enplanActions, useEnplanStore } from "@/lib/enplan-store";
 import { z } from "zod";
 
@@ -46,7 +47,8 @@ function LoginPage() {
 
   return (
     <MobileShell showNav={false}>
-      <div className="flex min-h-screen flex-col px-6 pt-12 pb-10">
+      <MapBackdrop area="norte" />
+      <div className="relative z-10 flex min-h-screen flex-col px-6 pt-12 pb-10">
         <Logo />
         <div className="mt-12">
           <h1 className="font-display text-2xl font-extrabold text-[#2B2B23]">
