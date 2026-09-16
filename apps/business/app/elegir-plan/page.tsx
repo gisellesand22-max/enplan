@@ -17,10 +17,10 @@ const PLANS = [
     price: '$399',
     period: '/mes',
     features: [
-      'Perfil de negocio',
-      'Hasta 3 promociones activas',
-      'Estadísticas básicas',
-      'Soporte por email',
+      'Tu negocio visible en la app',
+      '2 promociones activas para atraer gente nueva',
+      'Tus primeros números: visitas y canjes',
+      'Soporte por correo',
     ],
   },
   {
@@ -30,11 +30,11 @@ const PLANS = [
     period: '/mes',
     popular: true,
     features: [
-      'Todo lo del plan Básico',
       'Promociones ilimitadas',
-      'Programa de lealtad',
-      'Estadísticas avanzadas',
-      'Soporte prioritario',
+      'Creación de video mensual para tu negocio',
+      'Apareces antes que la competencia',
+      'Ve qué funciona: tendencias y crecimiento',
+      'Soporte inmediato',
     ],
   },
   {
@@ -43,11 +43,12 @@ const PLANS = [
     price: '$1,499',
     period: '/mes',
     features: [
-      'Todo lo del plan Pro',
-      'Múltiples sucursales',
-      'API personalizada',
-      'Gerente de cuenta dedicado',
-      'Integraciones avanzadas',
+      'Promociones ilimitadas con visibilidad máxima',
+      'Pauta de Meta Ads dedicada a tu negocio',
+      'Creación de video mensual para tu negocio',
+      'Posición #1 en tu categoría',
+      'Conoce a tu clientela: edades, género, quién repite',
+      'Tu propio asesor de enplan, siempre disponible',
     ],
   },
 ]

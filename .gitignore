@@ -57,3 +57,9 @@ yarn-debug.log*
 yarn-error.log*
 .vercel
 .env*
+
+# Personal / non-code files
+*.numbers
+
+# Remotion video app (excluded from repo)
+apps/social-video/

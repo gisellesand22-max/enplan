@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { LayoutGrid, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { BUSINESSES, type Business } from "@/lib/enplan-data";
 import { MobileShell, Logo } from "@/components/enplan/MobileShell";
 
@@ -26,48 +26,18 @@ export const Route = createFileRoute("/")({
 type CatChip = {
   key: string;
   label: string;
-  image?: string;
+  icon: string;
   match?: (b: Business) => boolean;
 };
 
 const CHIPS: CatChip[] = [
-  { key: "Todos", label: "Todos" },
-  {
-    key: "Comida",
-    label: "Comida",
-    image: "/assets/icons/categories/icon-comida.png",
-    match: (b) => b.category === "Comida",
-  },
-  {
-    key: "Belleza",
-    label: "Belleza",
-    image: "/assets/icons/categories/icon-belleza.png",
-    match: (b) => b.category === "Belleza",
-  },
-  {
-    key: "Fitness",
-    label: "Fitness",
-    image: "/assets/icons/categories/icon-fitness.png",
-    match: (b) => b.category === "Fitness",
-  },
-  {
-    key: "Ocio",
-    label: "Ocio",
-    image: "/assets/icons/categories/icon-ocio.png",
-    match: (b) => b.category === "Ocio",
-  },
-  {
-    key: "Tiendas",
-    label: "Tiendas",
-    image: "/assets/icons/categories/icon-tiendas.png",
-    match: (b) => b.category === "Tiendas",
-  },
-  {
-    key: "Servicios",
-    label: "Servicios",
-    image: "/assets/icons/categories/icon-servicios.png",
-    match: (b) => b.category === "Servicios",
-  },
+  { key: "Todos", label: "Todos", icon: "/assets/icons/categories/todos.svg" },
+  { key: "Comida", label: "Comida", icon: "/assets/icons/categories/comida.svg", match: (b) => b.category === "Comida" },
+  { key: "Belleza", label: "Belleza", icon: "/assets/icons/categories/belleza.svg", match: (b) => b.category === "Belleza" },
+  { key: "Fitness", label: "Fitness", icon: "/assets/icons/categories/fitness.svg", match: (b) => b.category === "Fitness" },
+  { key: "Ocio", label: "Ocio", icon: "/assets/icons/categories/ocio.svg", match: (b) => b.category === "Ocio" },
+  { key: "Tiendas", label: "Tiendas", icon: "/assets/icons/categories/tiendas.svg", match: (b) => b.category === "Tiendas" },
+  { key: "Servicios", label: "Servicios", icon: "/assets/icons/categories/servicios.svg", match: (b) => b.category === "Servicios" },
 ];
 
 function HomePage() {
@@ -108,37 +78,21 @@ function HomePage() {
               onClick={() => setActive(c.key)}
               className={`flex w-16 shrink-0 snap-start flex-col items-center gap-1.5 rounded-2xl border px-1.5 py-2 transition-colors ${
                 isActive
-                  ? "border-transparent bg-[#2B2B23]"
-                  : "border-[#D6D0C4] bg-white"
+                  ? "border-[#2B2B23] bg-white shadow-sm"
+                  : "border-transparent bg-transparent"
               }`}
             >
+              <img
+                src={c.icon}
+                alt=""
+                className="h-10 w-10 rounded-xl object-contain"
+              />
               <span
-                className={`flex h-10 w-10 items-center justify-center rounded-xl ${
-                  isActive ? "bg-[#2B2B23]" : "bg-[#FAF8F3]"
-                }`}
-              >
-                {c.image ? (
-                  <img
-                    src={c.image}
-                    alt=""
-                    className="h-10 w-10 object-contain"
-                    style={isActive ? { filter: "brightness(0) saturate(100%) invert(86%) sepia(38%) saturate(721%) hue-rotate(11deg) brightness(95%) contrast(88%)" } : undefined}
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
-                    }}
-                  />
-                ) : (
-                  <LayoutGrid
-                    size={22}
-                    className={isActive ? "text-[#CDD917]" : "text-[#2B2B23]"}
-                  />
-                )}
-              </span>
-              <span
-                className="text-[11px] font-medium leading-none"
+                className="text-[11px] leading-none"
                 style={{
                   fontFamily: '"Work Sans", system-ui, sans-serif',
-                  color: isActive ? "#FFFFFF" : "#2B2B23",
+                  color: "#2B2B23",
+                  fontWeight: isActive ? 700 : 500,
                 }}
               >
                 {c.label}
