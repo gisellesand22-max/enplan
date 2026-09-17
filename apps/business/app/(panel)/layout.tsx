@@ -39,7 +39,14 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
   return (
     <AuthProvider>
       <AuthGuard>
-        <div className="min-h-screen md:flex">
+        <div
+          className="pointer-events-none fixed inset-0 z-0"
+          style={{
+            background:
+              'linear-gradient(to bottom, #ffffff 0%, #ffffff 50%, rgba(205, 217, 23, 0.35) 100%)',
+          }}
+        />
+        <div className="relative z-10 min-h-screen md:flex">
           <PanelSidebar />
           <div className="flex-1">
             <TopBar />

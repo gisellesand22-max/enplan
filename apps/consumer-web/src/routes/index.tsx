@@ -59,6 +59,9 @@ function HomePage() {
   return (
     <MobileShell>
       <MapBackdrop />
+      <div
+        className="pointer-events-none fixed left-1/2 top-0 z-[1] h-56 w-full max-w-[430px] -translate-x-1/2 bg-gradient-to-b from-[#9fc9ef]/35 to-transparent"
+      />
       <div className="relative z-10">
       <header className="flex items-center justify-between px-5 pt-10 pb-4">
         <Logo />

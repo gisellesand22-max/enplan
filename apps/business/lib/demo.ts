@@ -1,6 +1,6 @@
 // Demo data + constants for the business panel (UI-first).
 // When the Supabase backend is live, these are replaced by real queries
-// from @enplan/shared (getDashboardNegocio, getPromociones, validarCodigo…).
+// from @enplan/shared (getDashboardNegocio, getPromociones…).
 
 export type PlanNegocio = 'basico' | 'pro' | 'premium'
 
@@ -90,6 +90,7 @@ export interface Negocio {
   plan: PlanNegocio
   logoUrl: string | null
   coverUrl: string | null
+  fotoPrincipal: 'logo' | 'cover'
   fotos: string[]
   horarios: Record<string, Horario>
 }
@@ -189,6 +190,7 @@ export const DEMO_NEGOCIO: Negocio = {
   plan: 'pro',
   logoUrl: null,
   coverUrl: null,
+  fotoPrincipal: 'cover',
   fotos: [],
   horarios: {
     lunes: { abre: '08:00', cierra: '20:00', cerrado: false },
@@ -328,17 +330,4 @@ export function buildPromoPerformance(
       conv: Math.round((validadas / activaciones) * 100),
     }
   })
-}
-
-// Demo-only code validation. Real logic will call the validar_codigo RPC.
-export function validarCodigoDemo(
-  codigo: string,
-):
-  | { status: 'success'; customerName: string; promoTitle: string }
-  | { status: 'error'; reason: 'expired' | 'already_used' | 'wrong_business' | 'invalid_code' } {
-  const c = codigo.trim()
-  if (c === '1234') return { status: 'success', customerName: 'Ana Paredes', promoTitle: '2x1 en cualquier café' }
-  if (c === '0000') return { status: 'error', reason: 'already_used' }
-  if (c === '1111') return { status: 'error', reason: 'expired' }
-  return { status: 'error', reason: 'invalid_code' }
 }

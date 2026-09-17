@@ -4,10 +4,7 @@ import Link from 'next/link'
 import {
   IconTrendingUp,
   IconTicket,
-  IconScan,
-  IconArrowRight,
   IconUsers,
-  IconShoppingBag,
   IconDeviceMobile,
   IconChartBar,
   IconCheck,
@@ -44,18 +41,9 @@ export default function DashboardPage() {
       icon: IconUsers,
       iconBg: 'bg-blue-100',
       iconColor: 'text-blue-600',
-      label: 'Clientes activos',
+      label: 'Visitas esta semana',
       value: DEMO_DASHBOARD.totalVisitasSemana.toLocaleString(),
       change: '+5% vs semana pasada',
-      changeColor: 'text-green-600',
-    },
-    {
-      icon: IconShoppingBag,
-      iconBg: 'bg-orange-100',
-      iconColor: 'text-orange-600',
-      label: 'Validaciones',
-      value: DEMO_DASHBOARD.totalVisitasHoy.toLocaleString(),
-      change: '+8% vs ayer',
       changeColor: 'text-green-600',
     },
     {
@@ -102,12 +90,6 @@ export default function DashboardPage() {
       subtitle: 'Ana P. activó 2x1 en café',
       time: 'Hace 1 hora',
     },
-  ]
-
-  const quickStats = [
-    { label: 'Tasa de conversión', value: '72%', percent: 72, color: 'bg-lima' },
-    { label: 'Tasa de retorno', value: '38%', percent: 38, color: 'bg-orange-500' },
-    { label: 'Satisfacción', value: '94%', percent: 94, color: 'bg-green-500' },
   ]
 
   return (
@@ -157,28 +139,8 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Quick Stats */}
+        {/* Right column */}
         <div className="flex flex-col gap-4">
-          <div className="rounded-2xl border border-arena-dark/20 bg-white p-6">
-            <h2 className="mb-5 font-montserrat text-lg font-bold text-carbon">Estadísticas rápidas</h2>
-            <div className="flex flex-col gap-5">
-              {quickStats.map((stat) => (
-                <div key={stat.label}>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-carbon/60">{stat.label}</span>
-                    <span className="text-sm font-bold text-carbon">{stat.value}</span>
-                  </div>
-                  <div className="h-2 w-full rounded-full bg-arena-dark/20">
-                    <div
-                      className={`h-2 rounded-full ${stat.color}`}
-                      style={{ width: `${stat.percent}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Top promos */}
           <div className="rounded-2xl border border-arena-dark/20 bg-white p-6">
             <h2 className="mb-4 font-montserrat text-lg font-bold text-carbon">Top promos</h2>
@@ -196,23 +158,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-
-      {/* Quick action */}
-      <Link
-        href="/validar"
-        className="flex items-center justify-between rounded-2xl bg-carbon p-5 text-white transition-colors hover:bg-carbon-600"
-      >
-        <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-lima text-carbon">
-            <IconScan size={22} />
-          </span>
-          <div>
-            <p className="font-montserrat font-bold">Validar un código</p>
-            <p className="text-sm text-white/60">Registra la visita de un cliente</p>
-          </div>
-        </div>
-        <IconArrowRight size={20} className="text-white/60" />
-      </Link>
     </div>
   )
 }

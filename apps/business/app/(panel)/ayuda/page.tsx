@@ -9,7 +9,6 @@ import {
   IconBook,
   IconMessageCircle,
   IconTicket,
-  IconScan,
   IconChartBar,
   IconSettings,
 } from '@tabler/icons-react'
@@ -18,10 +17,6 @@ const faqs = [
   {
     question: '¿Cómo creo una nueva promoción?',
     answer: 'Ve a la sección "Promociones" en el menú lateral y haz clic en "Nueva promoción". Elige el tipo (porcentaje, 2x1, beneficio fijo, clase o servicio), agrega un título, descripción y condiciones. Una vez guardada, se activa automáticamente para los usuarios de enplan.',
-  },
-  {
-    question: '¿Cómo valido la visita de un cliente?',
-    answer: 'Cuando un cliente llega con su código de enplan., ve a "Validar" en el menú. Ingresa el código de 4 dígitos que te muestra el cliente y el sistema registrará la visita automáticamente en tu panel.',
   },
   {
     question: '¿Puedo pausar una promoción sin eliminarla?',
@@ -54,11 +49,6 @@ const guides = [
     icon: IconTicket,
     title: 'Crear tu primera promo',
     description: 'Guía paso a paso para configurar una promoción que atraiga clientes.',
-  },
-  {
-    icon: IconScan,
-    title: 'Validar visitas',
-    description: 'Cómo registrar las visitas de clientes con códigos enplan.',
   },
   {
     icon: IconChartBar,

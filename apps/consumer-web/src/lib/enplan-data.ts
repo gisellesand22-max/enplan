@@ -21,6 +21,7 @@ export type Business = {
   description: string;
   promos: Promo[];
   redemptions: number; // veces que usuarios han usado sus beneficios en enplan
+  fotoPrincipal: "logo" | "cover"; // el negocio elige cuál se muestra en el home
 };
 
 export const CATEGORIES: { key: "Todos" | Category; label: string }[] = [
@@ -46,6 +47,7 @@ export const BUSINESSES: Business[] = [
     description:
       "Café de especialidad tostado en casa, repostería artesanal y un patio para trabajar o pasar la tarde con amigos.",
     redemptions: 412,
+    fotoPrincipal: "logo",
     promos: [
       {
         id: "p1",
@@ -73,6 +75,7 @@ export const BUSINESSES: Business[] = [
     description:
       "Gimnasio con equipo de última generación, clases grupales y entrenadores certificados.",
     redemptions: 356,
+    fotoPrincipal: "cover",
     promos: [
       {
         id: "p1",
@@ -94,6 +97,7 @@ export const BUSINESSES: Business[] = [
     description:
       "Bar al aire libre con mixología de autor, música en vivo los fines de semana y la mejor terraza del centro.",
     redemptions: 218,
+    fotoPrincipal: "cover",
     promos: [
       {
         id: "p1",
@@ -115,6 +119,7 @@ export const BUSINESSES: Business[] = [
     description:
       "Salón de belleza con estilistas expertos en color y cortes contemporáneos.",
     redemptions: 174,
+    fotoPrincipal: "logo",
     promos: [
       {
         id: "p1",
@@ -136,6 +141,7 @@ export const BUSINESSES: Business[] = [
     description:
       "Tacos al pastor tradicionales hechos en trompo de leña. Más de 30 años en Aguascalientes.",
     redemptions: 89,
+    fotoPrincipal: "cover",
     promos: [
       {
         id: "p1",
@@ -157,6 +163,7 @@ export const BUSINESSES: Business[] = [
     description:
       "Estudio boutique de yoga con clases para todos los niveles, meditación guiada y talleres mensuales.",
     redemptions: 267,
+    fotoPrincipal: "logo",
     promos: [
       {
         id: "p1",
@@ -178,6 +185,7 @@ export const BUSINESSES: Business[] = [
     description:
       "Servicio mecánico express para tu auto. Diagnóstico computarizado sin costo.",
     redemptions: 52,
+    fotoPrincipal: "cover",
     promos: [
       {
         id: "p1",
@@ -199,6 +207,7 @@ export const BUSINESSES: Business[] = [
     description:
       "Cine independiente con estrenos seleccionados, ciclos temáticos y la mejor sala IMAX de la ciudad.",
     redemptions: 143,
+    fotoPrincipal: "logo",
     promos: [
       {
         id: "p1",

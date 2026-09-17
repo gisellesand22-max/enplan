@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState, useCallback, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   IconCamera,
   IconBuildingStore,
@@ -8,6 +9,7 @@ import {
   IconCreditCard,
   IconExternalLink,
   IconLoader2,
+  IconLogout,
   IconPlus,
   IconTrash,
   IconX,
@@ -81,10 +83,11 @@ export default function PerfilPage() {
   const coverRef = useRef<HTMLInputElement>(null)
   const fotosRef = useRef<HTMLInputElement>(null)
 
-  const { session, subscription } = useAuth()
+  const { session, subscription, signOut } = useAuth()
   const stripeCustomerId = subscription?.stripeCustomerId ?? null
   const stripeSubscriptionId = subscription?.stripeSubscriptionId ?? null
   const authToken = session?.access_token
+  const router = useRouter()
 
   useEffect(() => {
     if (subscription?.plan && subscription.plan !== negocio.plan) {
@@ -251,7 +254,7 @@ export default function PerfilPage() {
           }}
         />
 
-        <div className="-mt-10 ml-5 flex items-end gap-3">
+        <div className="relative z-10 -mt-10 ml-5 flex items-end gap-3">
           <div className="relative">
             <button
               type="button"
@@ -295,6 +298,42 @@ export default function PerfilPage() {
         </div>
       </div>
 
+      {/* Foto principal */}
+      <div>
+        <h2 className="mb-1 text-xs font-medium uppercase tracking-wider text-carbon/35">
+          Foto principal en el directorio
+        </h2>
+        <p className="mb-3 text-sm text-carbon/45">
+          Esta es la foto que ven los usuarios cuando exploran negocios en enplan.
+        </p>
+        <div className="inline-flex rounded-full bg-arena p-1">
+          <button
+            type="button"
+            disabled={!negocio.coverUrl}
+            onClick={() => updateNegocio({ fotoPrincipal: 'cover' })}
+            className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+              negocio.fotoPrincipal === 'cover'
+                ? 'bg-lima text-carbon'
+                : 'text-carbon/50 hover:text-carbon'
+            } ${!negocio.coverUrl ? 'cursor-not-allowed opacity-40 hover:text-carbon/50' : ''}`}
+          >
+            Foto de portada
+          </button>
+          <button
+            type="button"
+            disabled={!negocio.logoUrl}
+            onClick={() => updateNegocio({ fotoPrincipal: 'logo' })}
+            className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+              negocio.fotoPrincipal === 'logo'
+                ? 'bg-lima text-carbon'
+                : 'text-carbon/50 hover:text-carbon'
+            } ${!negocio.logoUrl ? 'cursor-not-allowed opacity-40 hover:text-carbon/50' : ''}`}
+          >
+            Logo
+          </button>
+        </div>
+      </div>
+
       {/* Photo gallery */}
       <div>
         <h2 className="mb-1 text-xs font-medium uppercase tracking-wider text-carbon/35">
@@ -305,32 +344,38 @@ export default function PerfilPage() {
           dentro de la app.
         </p>
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
-          {(negocio.fotos ?? []).map((foto, i) => (
-            <div key={i} className="group relative aspect-square">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={foto}
-                alt={`Foto ${i + 1}`}
-                className="h-full w-full rounded-xl object-cover"
-              />
+          {Array.from({ length: MAX_FOTOS }).map((_, i) => {
+            const foto = negocio.fotos?.[i]
+            if (foto) {
+              return (
+                <div key={i} className="group relative aspect-square">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={foto}
+                    alt={`Foto ${i + 1}`}
+                    className="h-full w-full rounded-xl object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeFoto(i)}
+                    className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-carbon/70 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                  >
+                    <IconX size={12} />
+                  </button>
+                </div>
+              )
+            }
+            return (
               <button
+                key={i}
                 type="button"
-                onClick={() => removeFoto(i)}
-                className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-carbon/70 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                onClick={() => fotosRef.current?.click()}
+                className="flex aspect-square items-center justify-center rounded-xl border-2 border-dashed border-arena-dark text-carbon/25 transition-colors hover:border-carbon/30 hover:text-carbon/40"
               >
-                <IconX size={12} />
+                <IconPlus size={24} />
               </button>
-            </div>
-          ))}
-          {(negocio.fotos?.length ?? 0) < MAX_FOTOS && (
-            <button
-              type="button"
-              onClick={() => fotosRef.current?.click()}
-              className="flex aspect-square items-center justify-center rounded-xl border-2 border-dashed border-arena-dark text-carbon/25 transition-colors hover:border-carbon/30 hover:text-carbon/40"
-            >
-              <IconPlus size={24} />
-            </button>
-          )}
+            )
+          })}
         </div>
         <input
           ref={fotosRef}
@@ -759,6 +804,20 @@ export default function PerfilPage() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Sign out */}
+      <div className="flex justify-center pb-4">
+        <button
+          type="button"
+          onClick={async () => {
+            await signOut()
+            router.replace('/login')
+          }}
+          className="flex items-center gap-2 text-sm font-medium text-carbon/50 hover:text-carbon transition-colors"
+        >
+          <IconLogout size={16} /> Cerrar sesión
+        </button>
       </div>
     </div>
   )

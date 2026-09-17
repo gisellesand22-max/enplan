@@ -6,7 +6,6 @@ import {
   IconLayoutDashboard,
   IconChartBar,
   IconTicket,
-  IconScan,
   IconBuildingStore,
   IconLock,
   IconSettings,
@@ -17,7 +16,6 @@ import { useStore } from '../lib/store'
 const mainItems = [
   { href: '/dashboard', label: 'Dashboard', icon: IconLayoutDashboard },
   { href: '/promociones', label: 'Promociones', icon: IconTicket, badge: null as number | null },
-  { href: '/validar', label: 'Validar', icon: IconScan },
   { href: '/metricas', label: 'Analíticas', icon: IconChartBar },
 ]
 
@@ -50,7 +48,6 @@ export function PanelNav() {
     { href: '/dashboard', label: 'Inicio', icon: IconLayoutDashboard },
     { href: '/metricas', label: 'Métricas', icon: IconChartBar },
     { href: '/promociones', label: 'Promos', icon: IconTicket },
-    { href: '/validar', label: 'Validar', icon: IconScan },
     { href: '/perfil', label: 'Negocio', icon: IconBuildingStore },
   ]
 
