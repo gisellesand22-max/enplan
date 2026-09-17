@@ -36,8 +36,8 @@ const CHIPS: CatChip[] = [
   { key: "Todos", label: "Todos", icon: "/assets/icons/categories/todos.svg" },
   { key: "Comida", label: "Comida", icon: "/assets/icons/categories/comida.png", match: (b) => b.category === "Comida" },
   { key: "Belleza", label: "Belleza", icon: "/assets/icons/categories/belleza.png", match: (b) => b.category === "Belleza" },
-  { key: "Fitness", label: "Fitness", icon: "/assets/icons/categories/fitness.svg", match: (b) => b.category === "Fitness" },
-  { key: "Ocio", label: "Ocio", icon: "/assets/icons/categories/ocio.svg", match: (b) => b.category === "Ocio" },
+  { key: "Fitness", label: "Fitness", icon: "/assets/icons/categories/fitness.png", match: (b) => b.category === "Fitness" },
+  { key: "Ocio", label: "Ocio", icon: "/assets/icons/categories/ocio.png", match: (b) => b.category === "Ocio" },
   { key: "Tiendas", label: "Tiendas", icon: "/assets/icons/categories/tiendas.svg", match: (b) => b.category === "Tiendas" },
   { key: "Servicios", label: "Servicios", icon: "/assets/icons/categories/servicios.svg", match: (b) => b.category === "Servicios" },
 ];

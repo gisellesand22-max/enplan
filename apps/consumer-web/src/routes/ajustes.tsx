@@ -1,5 +1,6 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { Check } from "lucide-react";
 import { MobileShell } from "@/components/enplan/MobileShell";
 import { MapBackdrop } from "@/components/enplan/MapBackdrop";
 import { enplanActions, useEnplanStore } from "@/lib/enplan-store";
@@ -50,6 +51,19 @@ function AjustesPage() {
   const [toggles, setToggles] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(TOGGLES.map((t) => [t.key, t.default])),
   );
+  const [editing, setEditing] = useState<"nombre" | "email" | null>(null);
+  const [draft, setDraft] = useState("");
+
+  const startEdit = (field: "nombre" | "email") => {
+    setDraft(field === "nombre" ? user?.name ?? "" : user?.email ?? "");
+    setEditing(field);
+  };
+
+  const saveEdit = () => {
+    if (!draft.trim()) return;
+    enplanActions.updateUser(editing === "nombre" ? { name: draft.trim() } : { email: draft.trim() });
+    setEditing(null);
+  };
 
   const plan = "Gratis";
 
@@ -68,8 +82,37 @@ function AjustesPage() {
       </header>
 
       <Section title="Cuenta">
-        <Row title="Editar nombre" onClick={() => alert("Editar nombre")} />
-        <Row title="Cambiar email" onClick={() => alert("Cambiar email")} />
+        {editing === "nombre" ? (
+          <EditRow
+            label="Nombre"
+            value={draft}
+            onChange={setDraft}
+            onSave={saveEdit}
+            onCancel={() => setEditing(null)}
+          />
+        ) : (
+          <Row
+            title="Editar nombre"
+            subtitle={user?.name}
+            onClick={() => startEdit("nombre")}
+          />
+        )}
+        {editing === "email" ? (
+          <EditRow
+            label="Email"
+            value={draft}
+            onChange={setDraft}
+            onSave={saveEdit}
+            onCancel={() => setEditing(null)}
+            type="email"
+          />
+        ) : (
+          <Row
+            title="Cambiar email"
+            subtitle={user?.email}
+            onClick={() => startEdit("email")}
+          />
+        )}
       </Section>
 
       <Section title="Notificaciones">
@@ -98,8 +141,20 @@ function AjustesPage() {
           <span className="text-sm text-[#2B2B23]" style={bodyFont}>Versión</span>
           <span className="text-sm text-[#2B2B23]/60" style={bodyFont}>1.0.0</span>
         </div>
-        <Row title="Términos y condiciones" onClick={() => alert("Términos y condiciones")} />
-        <Row title="Política de privacidad" onClick={() => alert("Política de privacidad")} />
+        <Link
+          to="/terminos"
+          className="flex w-full items-center justify-between px-4 py-3.5 text-left transition-colors hover:bg-[#FAF8F3]"
+        >
+          <span className="text-sm text-[#2B2B23]" style={bodyFont}>Términos y condiciones</span>
+          <span className="text-[#2B2B23]/30">›</span>
+        </Link>
+        <Link
+          to="/privacidad"
+          className="flex w-full items-center justify-between px-4 py-3.5 text-left transition-colors hover:bg-[#FAF8F3]"
+        >
+          <span className="text-sm text-[#2B2B23]" style={bodyFont}>Política de privacidad</span>
+          <span className="text-[#2B2B23]/30">›</span>
+        </Link>
       </Section>
 
       <div className="px-5 pt-2 pb-10">
@@ -137,16 +192,80 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-function Row({ title, onClick }: { title: string; onClick: () => void }) {
+function Row({
+  title,
+  subtitle,
+  onClick,
+}: {
+  title: string;
+  subtitle?: string;
+  onClick: () => void;
+}) {
   return (
     <button
       type="button"
       onClick={onClick}
       className="flex w-full items-center justify-between px-4 py-3.5 text-left transition-colors hover:bg-[#FAF8F3]"
     >
-      <span className="text-sm text-[#2B2B23]" style={bodyFont}>{title}</span>
-      <span className="text-[#2B2B23]/30">›</span>
+      <span className="min-w-0">
+        <span className="block text-sm text-[#2B2B23]" style={bodyFont}>{title}</span>
+        {subtitle && (
+          <span className="block truncate text-xs text-[#2B2B23]/45" style={bodyFont}>{subtitle}</span>
+        )}
+      </span>
+      <span className="shrink-0 text-[#2B2B23]/30">›</span>
     </button>
+  );
+}
+
+function EditRow({
+  label,
+  value,
+  onChange,
+  onSave,
+  onCancel,
+  type = "text",
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  onSave: () => void;
+  onCancel: () => void;
+  type?: string;
+}) {
+  return (
+    <div className="px-4 py-3.5">
+      <label className="mb-1.5 block text-xs font-medium text-[#2B2B23]/50" style={bodyFont}>
+        {label}
+      </label>
+      <div className="flex items-center gap-2">
+        <input
+          type={type}
+          autoFocus
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && onSave()}
+          className="w-full rounded-xl border border-[#D6D0C4]/60 bg-[#FAF8F3] px-3 py-2 text-sm outline-none focus:border-[#CDD917]"
+          style={bodyFont}
+        />
+        <button
+          type="button"
+          onClick={onSave}
+          aria-label="Guardar"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#CDD917] text-[#2B2B23]"
+        >
+          <Check size={16} />
+        </button>
+      </div>
+      <button
+        type="button"
+        onClick={onCancel}
+        className="mt-2 text-xs font-medium text-[#2B2B23]/40"
+        style={bodyFont}
+      >
+        Cancelar
+      </button>
+    </div>
   );
 }
 

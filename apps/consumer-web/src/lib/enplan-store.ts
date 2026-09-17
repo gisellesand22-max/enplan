@@ -99,6 +99,12 @@ export const enplanActions = {
     persist();
     emit();
   },
+  updateUser(patch: Partial<User>) {
+    if (!state.user) return;
+    state = { ...state, user: { ...state.user, ...patch } };
+    persist();
+    emit();
+  },
   activate(input: {
     businessId: string;
     businessName: string;

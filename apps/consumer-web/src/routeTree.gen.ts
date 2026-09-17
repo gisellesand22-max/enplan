@@ -9,7 +9,9 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as PrivacidadRouteImport } from './routes/privacidad'
 import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as GuardadosRouteImport } from './routes/guardados'
@@ -19,9 +21,19 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as BusinessBusinessIdRouteImport } from './routes/business.$businessId'
 import { Route as BusinessBusinessIdActivatePromoIdRouteImport } from './routes/business.$businessId.activate.$promoId'
 
+const TerminosRoute = TerminosRouteImport.update({
+  id: '/terminos',
+  path: '/terminos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadRoute = PrivacidadRouteImport.update({
+  id: '/privacidad',
+  path: '/privacidad',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PerfilRoute = PerfilRouteImport.update({
@@ -73,7 +85,9 @@ export interface FileRoutesByFullPath {
   '/guardados': typeof GuardadosRoute
   '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
+  '/privacidad': typeof PrivacidadRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terminos': typeof TerminosRoute
   '/business/$businessId': typeof BusinessBusinessIdRouteWithChildren
   '/business/$businessId/activate/$promoId': typeof BusinessBusinessIdActivatePromoIdRoute
 }
@@ -84,7 +98,9 @@ export interface FileRoutesByTo {
   '/guardados': typeof GuardadosRoute
   '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
+  '/privacidad': typeof PrivacidadRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terminos': typeof TerminosRoute
   '/business/$businessId': typeof BusinessBusinessIdRouteWithChildren
   '/business/$businessId/activate/$promoId': typeof BusinessBusinessIdActivatePromoIdRoute
 }
@@ -96,7 +112,9 @@ export interface FileRoutesById {
   '/guardados': typeof GuardadosRoute
   '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
+  '/privacidad': typeof PrivacidadRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terminos': typeof TerminosRoute
   '/business/$businessId': typeof BusinessBusinessIdRouteWithChildren
   '/business/$businessId/activate/$promoId': typeof BusinessBusinessIdActivatePromoIdRoute
 }
@@ -109,7 +127,9 @@ export interface FileRouteTypes {
     | '/guardados'
     | '/login'
     | '/perfil'
+    | '/privacidad'
     | '/sitemap.xml'
+    | '/terminos'
     | '/business/$businessId'
     | '/business/$businessId/activate/$promoId'
   fileRoutesByTo: FileRoutesByTo
@@ -120,7 +140,9 @@ export interface FileRouteTypes {
     | '/guardados'
     | '/login'
     | '/perfil'
+    | '/privacidad'
     | '/sitemap.xml'
+    | '/terminos'
     | '/business/$businessId'
     | '/business/$businessId/activate/$promoId'
   id:
@@ -131,7 +153,9 @@ export interface FileRouteTypes {
     | '/guardados'
     | '/login'
     | '/perfil'
+    | '/privacidad'
     | '/sitemap.xml'
+    | '/terminos'
     | '/business/$businessId'
     | '/business/$businessId/activate/$promoId'
   fileRoutesById: FileRoutesById
@@ -143,17 +167,33 @@ export interface RootRouteChildren {
   GuardadosRoute: typeof GuardadosRoute
   LoginRoute: typeof LoginRoute
   PerfilRoute: typeof PerfilRoute
+  PrivacidadRoute: typeof PrivacidadRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TerminosRoute: typeof TerminosRoute
   BusinessBusinessIdRoute: typeof BusinessBusinessIdRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terminos': {
+      id: '/terminos'
+      path: '/terminos'
+      fullPath: '/terminos'
+      preLoaderRoute: typeof TerminosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidad': {
+      id: '/privacidad'
+      path: '/privacidad'
+      fullPath: '/privacidad'
+      preLoaderRoute: typeof PrivacidadRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/perfil': {
@@ -234,7 +274,9 @@ const rootRouteChildren: RootRouteChildren = {
   GuardadosRoute: GuardadosRoute,
   LoginRoute: LoginRoute,
   PerfilRoute: PerfilRoute,
+  PrivacidadRoute: PrivacidadRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TerminosRoute: TerminosRoute,
   BusinessBusinessIdRoute: BusinessBusinessIdRouteWithChildren,
 }
 export const routeTree = rootRouteImport
