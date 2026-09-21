@@ -16,7 +16,7 @@ export const Route = createFileRoute("/perfil")({
   component: ProfilePage,
 });
 
-const bodyFont = { fontFamily: '"Work Sans", system-ui, sans-serif' as const };
+const bodyFont = { fontFamily: '"Inter", system-ui, sans-serif' as const };
 const REFERRAL_HANDLE = "usuario123";
 const REFERRAL_LINK = `enplan.app/ref/${REFERRAL_HANDLE}`;
 const REFERRAL_COUNT = 0;
@@ -116,7 +116,7 @@ function ProfilePage() {
         <div className="grid grid-cols-2 gap-3">
           {stats.map((s) => (
             <div key={s.label} className="rounded-2xl bg-white p-4 shadow-sm">
-              <p className={`font-display text-2xl font-extrabold ${s.accent ? "text-[#CDD917]" : "text-[#2B2B23]"}`}>{s.value}</p>
+              <p className={`font-display text-2xl font-extrabold ${s.accent ? "text-[#FF6B35]" : "text-[#2B2B23]"}`}>{s.value}</p>
               <p className="mt-1 text-xs text-[#2B2B23]/55" style={bodyFont}>{s.label}</p>
             </div>
           ))}
@@ -146,7 +146,7 @@ function ProfilePage() {
       <section className="mt-7 px-5">
         <h2 className="mb-3 font-display text-base font-bold text-[#2B2B23]">Referidos</h2>
         <div className="rounded-2xl bg-white p-5 shadow-sm">
-          <p className="font-display text-2xl font-bold text-[#CDD917]">
+          <p className="font-display text-2xl font-bold text-[#FF6B35]">
             {REFERRAL_COUNT}{" "}
             <span className="text-sm font-normal text-[#2B2B23]" style={bodyFont}>
               {(REFERRAL_COUNT as number) === 1 ? "amigo referido" : "amigos referidos"}

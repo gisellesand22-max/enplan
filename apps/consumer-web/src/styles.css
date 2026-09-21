@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Work Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
 
   --color-lima: #cdd917;
   --color-carbon: #2b2b23;
@@ -59,6 +59,7 @@
   h3,
   h4 {
     font-family: var(--font-display);
+    font-weight: 900;
     letter-spacing: -0.01em;
   }
 }
@@ -66,6 +67,7 @@
 @layer utilities {
   .font-display {
     font-family: var(--font-display);
+    font-weight: 900;
   }
   .no-scrollbar::-webkit-scrollbar {
     display: none;

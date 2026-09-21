@@ -48,7 +48,7 @@ export function BusinessCard({ business }: { business: Business }) {
           </h3>
           {best && (
             <>
-              <span className="mt-2 inline-block rounded-full bg-[#CDD917] px-2 py-0.5 text-[11px] font-bold text-[#2B2B23]">
+              <span className="mt-2 inline-block rounded-full bg-[#FF6B35] px-2 py-0.5 text-[11px] font-bold text-white">
                 {best.type}
               </span>
               <p className="mt-1 line-clamp-1 text-xs text-[#2B2B23]/60">{best.title}</p>

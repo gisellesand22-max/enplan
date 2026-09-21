@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-const bodyFont = { fontFamily: '"Work Sans", system-ui, sans-serif' as const };
+const bodyFont = { fontFamily: '"Inter", system-ui, sans-serif' as const };
 
 function renderInline(text: string): ReactNode[] {
   return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>

@@ -33,13 +33,13 @@ type CatChip = {
 };
 
 const CHIPS: CatChip[] = [
-  { key: "Todos", label: "Todos", icon: "/assets/icons/categories/todos.svg" },
+  { key: "Todos", label: "Todos", icon: "/assets/icons/categories/todos.png" },
   { key: "Comida", label: "Comida", icon: "/assets/icons/categories/comida.png", match: (b) => b.category === "Comida" },
   { key: "Belleza", label: "Belleza", icon: "/assets/icons/categories/belleza.png", match: (b) => b.category === "Belleza" },
   { key: "Fitness", label: "Fitness", icon: "/assets/icons/categories/fitness.png", match: (b) => b.category === "Fitness" },
   { key: "Ocio", label: "Ocio", icon: "/assets/icons/categories/ocio.png", match: (b) => b.category === "Ocio" },
-  { key: "Tiendas", label: "Tiendas", icon: "/assets/icons/categories/tiendas.svg", match: (b) => b.category === "Tiendas" },
-  { key: "Servicios", label: "Servicios", icon: "/assets/icons/categories/servicios.svg", match: (b) => b.category === "Servicios" },
+  { key: "Tiendas", label: "Tiendas", icon: "/assets/icons/categories/tiendas.png", match: (b) => b.category === "Tiendas" },
+  { key: "Servicios", label: "Servicios", icon: "/assets/icons/categories/servicios.png", match: (b) => b.category === "Servicios" },
 ];
 
 function HomePage() {
@@ -83,11 +83,7 @@ function HomePage() {
               key={c.key}
               type="button"
               onClick={() => setActive(c.key)}
-              className={`flex w-16 shrink-0 snap-start flex-col items-center gap-1.5 rounded-2xl border px-1.5 py-2 transition-colors ${
-                isActive
-                  ? "border-[#2B2B23] bg-white shadow-sm"
-                  : "border-transparent bg-transparent"
-              }`}
+              className="flex w-16 shrink-0 snap-start flex-col items-center gap-1.5 px-1.5 py-2"
             >
               <img
                 src={c.icon}
@@ -97,9 +93,13 @@ function HomePage() {
               <span
                 className="text-[11px] leading-none"
                 style={{
-                  fontFamily: '"Work Sans", system-ui, sans-serif',
+                  fontFamily: '"Inter", system-ui, sans-serif',
                   color: "#2B2B23",
                   fontWeight: isActive ? 700 : 500,
+                  textDecoration: isActive ? "underline" : "none",
+                  textDecorationColor: "#CDD917",
+                  textDecorationThickness: "2px",
+                  textUnderlineOffset: "3px",
                 }}
               >
                 {c.label}
@@ -112,9 +112,14 @@ function HomePage() {
       {/* Business listing */}
       <section className="px-5 pt-2 pb-6">
         <h2
-          className="mb-3 font-display font-bold text-[#2B2B23]"
+          className="mb-3 flex items-center gap-1.5 font-display font-bold text-[#2B2B23]"
           style={{ fontSize: "18px" }}
         >
+          <img
+            src="/assets/icons/misc/destacados.png"
+            alt=""
+            className="h-6 w-6 object-contain"
+          />
           Destacados
         </h2>
         <div className="grid grid-cols-2 gap-3">

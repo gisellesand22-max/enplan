@@ -177,7 +177,7 @@ function AjustesPage() {
   );
 }
 
-const bodyFont = { fontFamily: '"Work Sans", system-ui, sans-serif' as const };
+const bodyFont = { fontFamily: '"Inter", system-ui, sans-serif' as const };
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (

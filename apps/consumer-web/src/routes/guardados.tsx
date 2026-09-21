@@ -17,7 +17,7 @@ export const Route = createFileRoute("/guardados")({
   component: GuardadosPage,
 });
 
-const bodyFont = { fontFamily: '"Work Sans", system-ui, sans-serif' as const };
+const bodyFont = { fontFamily: '"Inter", system-ui, sans-serif' as const };
 
 function GuardadosPage() {
   const { savedPlaces } = useEnplanStore();

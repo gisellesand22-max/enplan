@@ -58,7 +58,7 @@ export const Route = createFileRoute("/business/$businessId")({
   component: BusinessPage,
 });
 
-const bodyFont = { fontFamily: '"Work Sans", system-ui, sans-serif' as const };
+const bodyFont = { fontFamily: '"Inter", system-ui, sans-serif' as const };
 const WA_MESSAGE = "Hola, vi tu negocio en enplan. y me gustaría más información";
 
 function BusinessPage() {
@@ -135,7 +135,7 @@ function BusinessPage() {
           {business.name}
         </h1>
         <span
-          className="mt-1 inline-block rounded-full bg-[#CDD917] px-2.5 py-0.5 text-xs text-[#2B2B23]"
+          className="mt-1 inline-block rounded-full bg-[#FF6B35] px-2.5 py-0.5 text-xs text-white"
           style={bodyFont}
         >
           {business.category}
@@ -217,8 +217,8 @@ function BusinessPage() {
 
         {/* Usage counter / social proof */}
         <div className="mb-8 flex items-center gap-3 rounded-2xl bg-[#F3F1E9] p-4">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#CDD917]">
-            <Users size={16} className="text-[#2B2B23]" />
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FF6B35]">
+            <Users size={16} className="text-white" />
           </div>
           <p className="text-[13px] leading-snug text-[#2B2B23]" style={bodyFont}>
             <span className="font-display font-bold">{business.redemptions} usuarios</span> han
