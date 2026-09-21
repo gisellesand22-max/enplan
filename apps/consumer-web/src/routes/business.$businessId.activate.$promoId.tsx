@@ -1,9 +1,9 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Check, Clock, Share2 } from "lucide-react";
-import { BUSINESSES } from "@/lib/enplan-data";
+import { fetchNegocio } from "@/lib/negocios";
+import { supabase } from "@/lib/supabase";
 import {
-  enplanActions,
   formatCountdown,
   useEnplanStore,
   type ActiveBenefit,
@@ -19,8 +19,8 @@ export const Route = createFileRoute("/business/$businessId/activate/$promoId")(
       { name: "robots", content: "noindex" },
     ],
   }),
-  loader: ({ params }) => {
-    const business = BUSINESSES.find((b) => b.id === params.businessId);
+  loader: async ({ params }) => {
+    const business = await fetchNegocio(params.businessId);
     if (!business) throw notFound();
     const promo = business.promos.find((p) => p.id === params.promoId);
     if (!promo) throw notFound();
@@ -54,13 +54,15 @@ export const Route = createFileRoute("/business/$businessId/activate/$promoId")(
 
 function ActivatePage() {
   const { business, promo } = Route.useLoaderData();
-  const { user } = useEnplanStore();
+  const { user, sessionLoading } = useEnplanStore();
   const navigate = useNavigate();
   const [benefit, setBenefit] = useState<ActiveBenefit | null>(null);
+  const [activateError, setActivateError] = useState<string | null>(null);
 
   // Los hooks SIEMPRE se declaran arriba, nunca dentro de un if —
   // el hook condicional anterior podía crashear la app al azar.
   useEffect(() => {
+    if (sessionLoading) return;
     if (!user) {
       navigate({
         to: "/login",
@@ -69,18 +71,46 @@ function ActivatePage() {
       });
       return;
     }
-    const b = enplanActions.activate({
-      businessId: business.id,
-      businessName: business.name,
-      promoType: promo.type,
-      promoTitle: promo.title,
+    supabase.rpc("activar_promo", { p_promo_id: promo.id }).then(({ data, error }) => {
+      if (error || !data?.success) {
+        setActivateError(data?.mensaje ?? error?.message ?? "No se pudo activar este beneficio.");
+        return;
+      }
+      setBenefit({
+        id: data.activacion_id,
+        businessId: business.id,
+        businessName: business.name,
+        promoType: promo.type,
+        promoTitle: promo.title,
+        code: data.codigo,
+        activatedAt: Date.now(),
+        expiresAt: new Date(data.expira_en).getTime(),
+        status: "active",
+      });
     });
-    setBenefit(b);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [sessionLoading, user]);
 
-  if (!user) {
+  if (sessionLoading || (!user && !activateError)) {
     return null;
+  }
+
+  if (activateError) {
+    return (
+      <MobileShell showNav={false}>
+        <div className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
+          <p className="font-display text-lg font-bold text-[#2B2B23]">No pudimos activarlo</p>
+          <p className="mt-2 text-sm text-[#2B2B23]/60">{activateError}</p>
+          <Link
+            to="/business/$businessId"
+            params={{ businessId: business.id }}
+            className="mt-6 rounded-full bg-[#CDD917] px-6 py-2.5 font-display text-sm font-bold text-[#2B2B23]"
+          >
+            Volver al negocio
+          </Link>
+        </div>
+      </MobileShell>
+    );
   }
 
   if (!benefit) {

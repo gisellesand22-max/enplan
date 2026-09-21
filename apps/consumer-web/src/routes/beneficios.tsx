@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Share2, Ticket } from "lucide-react";
 import { MobileShell } from "@/components/enplan/MobileShell";
 import { MapBackdrop } from "@/components/enplan/MapBackdrop";
-import { useEnplanStore, type ActiveBenefit } from "@/lib/enplan-store";
+import { enplanActions, formatCountdown, useEnplanStore, type ActiveBenefit } from "@/lib/enplan-store";
 
 export const Route = createFileRoute("/beneficios")({
   head: () => ({
@@ -19,6 +20,10 @@ const bodyFont = { fontFamily: '"Inter", system-ui, sans-serif' as const };
 
 function BenefitsPage() {
   const { user, benefits } = useEnplanStore();
+
+  useEffect(() => {
+    if (user) enplanActions.refreshBenefits();
+  }, [user?.id]);
 
   if (!user) {
     return (
@@ -38,6 +43,10 @@ function BenefitsPage() {
   const active = benefits.filter((b) => b.status === "active" && b.expiresAt > now);
   const history = benefits.filter((b) => !(b.status === "active" && b.expiresAt > now));
 
+  const monthAgo = now - 30 * 24 * 60 * 60 * 1000;
+  const usadosEsteMes = benefits.filter((b) => b.status === "used" && b.activatedAt > monthAgo).length;
+  const negociosVisitados = new Set(benefits.map((b) => b.businessId)).size;
+
   return (
     <MobileShell>
       <MapBackdrop area="norte" />
@@ -47,8 +56,8 @@ function BenefitsPage() {
       </header>
 
       <div className="flex gap-2 px-5 pb-5">
-        <MetricPill text="3 usados este mes" />
-        <MetricPill text="2 negocios visitados" />
+        <MetricPill text={`${usadosEsteMes} usados este mes`} />
+        <MetricPill text={`${negociosVisitados} negocios visitados`} />
       </div>
 
       <section className="px-5 pb-6">
@@ -132,7 +141,7 @@ function ActivoCard({ benefit }: { benefit: ActiveBenefit }) {
         </div>
       </div>
       <p className="mt-2 text-center text-xs text-[#D6D0C4]" style={bodyFont}>
-        Expira en 18h 42m
+        Expira en {formatCountdown(benefit.expiresAt)}
       </p>
       <button
         type="button"

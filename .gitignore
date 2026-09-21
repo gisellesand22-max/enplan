@@ -63,3 +63,6 @@ yarn-error.log*
 
 # Remotion video app (excluded from repo)
 apps/social-video/
+
+# Supabase CLI local link metadata
+supabase/.temp/

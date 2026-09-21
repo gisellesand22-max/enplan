@@ -1,12 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu } from "lucide-react";
-import { BUSINESSES, type Business } from "@/lib/enplan-data";
+import type { Business } from "@/lib/enplan-data";
+import { fetchNegocios } from "@/lib/negocios";
 import { MobileShell, Logo } from "@/components/enplan/MobileShell";
 import { MapBackdrop } from "@/components/enplan/MapBackdrop";
 import { BusinessCard } from "@/components/enplan/BusinessCard";
 
 export const Route = createFileRoute("/")({
+  loader: () => fetchNegocios(),
   head: () => ({
     meta: [
       { title: "enplan. — Descubre beneficios en Aguascalientes" },
@@ -43,13 +45,14 @@ const CHIPS: CatChip[] = [
 ];
 
 function HomePage() {
+  const businesses = Route.useLoaderData();
   const [active, setActive] = useState<string>("Todos");
 
   const planRank: Record<string, number> = { Premium: 0, Pro: 1, "Básico": 2 };
   const base =
     active === "Todos"
-      ? BUSINESSES
-      : BUSINESSES.filter(CHIPS.find((c) => c.key === active)?.match ?? (() => false));
+      ? businesses
+      : businesses.filter(CHIPS.find((c) => c.key === active)?.match ?? (() => false));
   const filtered = [...base].sort((a, b) => {
     const r = (planRank[a.plan] ?? 99) - (planRank[b.plan] ?? 99);
     return r !== 0 ? r : a.name.localeCompare(b.name, "es");

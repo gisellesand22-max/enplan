@@ -65,6 +65,27 @@ function compressImage(
   })
 }
 
+function dataUrlToBlob(dataUrl: string): Blob {
+  const [header, base64] = dataUrl.split(',')
+  const mime = header?.match(/data:(.*?);/)?.[1] ?? 'image/jpeg'
+  const bytes = atob(base64 ?? '')
+  const arr = new Uint8Array(bytes.length)
+  for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i)
+  return new Blob([arr], { type: mime })
+}
+
+async function uploadToStorage(dataUrl: string, userId: string, prefix: string): Promise<string | null> {
+  if (!supabase) return null
+  const blob = dataUrlToBlob(dataUrl)
+  const path = `${userId}/${prefix}-${Date.now()}.jpg`
+  const { error } = await supabase.storage
+    .from('negocio-fotos')
+    .upload(path, blob, { contentType: blob.type, upsert: true })
+  if (error) return null
+  const { data } = supabase.storage.from('negocio-fotos').getPublicUrl(path)
+  return data.publicUrl
+}
+
 const DESC_MAX = 280
 
 export default function PerfilPage() {
@@ -102,7 +123,8 @@ export default function PerfilPage() {
   ) {
     try {
       const compressed = await compressImage(file, maxDim)
-      updateNegocio({ [key]: compressed })
+      const uploaded = session?.user.id ? await uploadToStorage(compressed, session.user.id, key) : null
+      updateNegocio({ [key]: uploaded ?? compressed })
     } catch {
       // silently fail
     }
@@ -111,7 +133,8 @@ export default function PerfilPage() {
   async function handleGalleryImage(file: File) {
     try {
       const compressed = await compressImage(file, 800)
-      addFoto(compressed)
+      const uploaded = session?.user.id ? await uploadToStorage(compressed, session.user.id, 'foto') : null
+      addFoto(uploaded ?? compressed)
     } catch {
       // silently fail
     }

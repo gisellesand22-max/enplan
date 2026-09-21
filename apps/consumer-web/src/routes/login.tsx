@@ -22,26 +22,35 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
-  const { user } = useEnplanStore();
+  const { user, sessionLoading } = useEnplanStore();
   const { next } = useSearch({ from: "/login" });
   const navigate = useNavigate();
+  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  if (user) {
+  if (!sessionLoading && user) {
     navigate({ to: next ?? "/", replace: true });
     return null;
   }
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
-    enplanActions.login(email);
-    navigate({ to: next ?? "/", replace: true });
-  };
-
-  const google = () => {
-    enplanActions.login("carlos@gmail.com");
+    if (!email || !password) return;
+    setError(null);
+    setLoading(true);
+    const result =
+      mode === "signup"
+        ? await enplanActions.signUp({ email, password, nombre: nombre || email.split("@")[0] })
+        : await enplanActions.signIn({ email, password });
+    setLoading(false);
+    if (result.error) {
+      setError(result.error);
+      return;
+    }
     navigate({ to: next ?? "/", replace: true });
   };
 
@@ -52,7 +61,7 @@ function LoginPage() {
         <Logo />
         <div className="mt-12">
           <h1 className="font-display text-2xl font-extrabold text-[#2B2B23]">
-            Inicia sesión para activar
+            {mode === "signup" ? "Crea tu cuenta" : "Inicia sesión para activar"}
           </h1>
           <p className="mt-2 text-sm text-[#2B2B23]/60">
             Accede a promociones exclusivas de negocios en Aguascalientes.
@@ -60,6 +69,16 @@ function LoginPage() {
         </div>
 
         <form onSubmit={submit} className="mt-8 space-y-3">
+          {mode === "signup" && (
+            <input
+              type="text"
+              required
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              placeholder="Tu nombre"
+              className="w-full rounded-xl border border-[#D6D0C4]/60 bg-[#FAF8F3] px-4 py-3 text-sm outline-none focus:border-[#CDD917]"
+            />
+          )}
           <input
             type="email"
             required
@@ -70,55 +89,41 @@ function LoginPage() {
           />
           <input
             type="password"
+            required
+            minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Contraseña"
             className="w-full rounded-xl border border-[#D6D0C4]/60 bg-[#FAF8F3] px-4 py-3 text-sm outline-none focus:border-[#CDD917]"
           />
+          {error && <p className="text-sm text-[#E04848]">{error}</p>}
           <button
             type="submit"
-            className="w-full rounded-full bg-[#CDD917] py-3 font-display text-sm font-bold text-[#2B2B23]"
+            disabled={loading}
+            className="w-full rounded-full bg-[#CDD917] py-3 font-display text-sm font-bold text-[#2B2B23] disabled:opacity-60"
           >
-            Entrar
+            {loading ? "Un momento…" : mode === "signup" ? "Crear cuenta" : "Entrar"}
           </button>
         </form>
 
-        <div className="my-5 flex items-center gap-3 text-[11px] uppercase tracking-wider text-[#2B2B23]/40">
-          <span className="h-px flex-1 bg-[#D6D0C4]/60" />
-          o continúa con
-          <span className="h-px flex-1 bg-[#D6D0C4]/60" />
-        </div>
-
-        <button
-          type="button"
-          onClick={google}
-          className="flex w-full items-center justify-center gap-2 rounded-full border border-[#2B2B23]/20 bg-white py-3 text-sm font-semibold text-[#2B2B23]"
-        >
-          <GoogleIcon /> Continuar con Google
-        </button>
-
-        <p className="mt-auto pt-10 text-center text-sm text-[#2B2B23]/60">
-          ¿No tienes cuenta?{" "}
-          <Link
-            to="/login"
-            search={{ next }}
+        <p className="mt-6 text-center text-sm text-[#2B2B23]/60">
+          {mode === "signup" ? "¿Ya tienes cuenta?" : "¿No tienes cuenta?"}{" "}
+          <button
+            type="button"
+            onClick={() => {
+              setError(null);
+              setMode((m) => (m === "signup" ? "login" : "signup"));
+            }}
             className="font-semibold text-[#2B2B23] underline-offset-4 hover:underline"
           >
-            Regístrate
-          </Link>
+            {mode === "signup" ? "Inicia sesión" : "Regístrate"}
+          </button>
         </p>
+
+        <Link to="/" className="mt-auto pt-10 text-center text-xs text-[#2B2B23]/40">
+          Volver al inicio
+        </Link>
       </div>
     </MobileShell>
-  );
-}
-
-function GoogleIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-      <path
-        fill="#EA4335"
-        d="M12 10.2v3.9h5.4c-.2 1.4-1.6 4.1-5.4 4.1-3.3 0-5.9-2.7-5.9-6s2.6-6 5.9-6c1.8 0 3.1.8 3.8 1.5l2.6-2.5C16.6 3.7 14.5 2.7 12 2.7 6.9 2.7 2.8 6.8 2.8 12s4.1 9.3 9.2 9.3c5.3 0 8.8-3.7 8.8-9 0-.6-.1-1.1-.2-1.6H12z"
-      />
-    </svg>
   );
 }

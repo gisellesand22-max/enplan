@@ -27,16 +27,24 @@ export function BusinessCard({ business }: { business: Business }) {
       >
         {business.fotoPrincipal === "logo" ? (
           <div className="relative flex h-[100px] items-center justify-center bg-[#FAF8F3]">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#CDD917] font-display text-lg font-extrabold text-[#2B2B23]">
-              {initials(business.name)}
-            </div>
+            {business.logoUrl ? (
+              <img src={business.logoUrl} alt="" className="h-full w-full object-cover" />
+            ) : (
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#CDD917] font-display text-lg font-extrabold text-[#2B2B23]">
+                {initials(business.name)}
+              </div>
+            )}
             <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-medium text-[#2B2B23]/70">
               {business.category}
             </span>
           </div>
         ) : (
           <div className="relative flex h-[100px] items-center justify-center bg-[#D6D0C4]">
-            <span className="text-[11px] text-[#2B2B23]/50">Foto</span>
+            {business.coverUrl ? (
+              <img src={business.coverUrl} alt="" className="h-full w-full object-cover" />
+            ) : (
+              <span className="text-[11px] text-[#2B2B23]/50">Foto</span>
+            )}
             <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-medium text-[#2B2B23]/70">
               {business.category}
             </span>

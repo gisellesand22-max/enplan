@@ -9,11 +9,10 @@
 --   * activaciones: + ahorro_calculado (lo calcula el SERVIDOR al activar)
 -- ============================================================================
 
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Users table
 CREATE TABLE users (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   email text UNIQUE NOT NULL,
   nombre text NOT NULL,               -- nombre de pila (lo ÚNICO que ve el negocio)
   apellido text,                      -- solo visible para la plataforma, nunca para negocios
@@ -27,7 +26,7 @@ CREATE TABLE users (
 
 -- Negocios table
 CREATE TABLE negocios (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid REFERENCES users(id) NOT NULL,
   nombre text NOT NULL,
   categoria text NOT NULL CHECK (categoria IN ('comida', 'belleza', 'fitness', 'ocio', 'tiendas', 'servicios')),
@@ -45,7 +44,7 @@ CREATE TABLE negocios (
 
 -- Promociones table
 CREATE TABLE promociones (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   negocio_id uuid REFERENCES negocios(id) NOT NULL,
   tipo text NOT NULL CHECK (tipo IN ('porcentaje', '2x1', 'beneficio_fijo', 'clase', 'servicio')),
   titulo text NOT NULL,
@@ -68,7 +67,7 @@ CREATE TABLE promociones (
 
 -- Activaciones table
 CREATE TABLE activaciones (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid REFERENCES users(id) NOT NULL,
   negocio_id uuid REFERENCES negocios(id) NOT NULL,
   promo_id uuid REFERENCES promociones(id) NOT NULL,

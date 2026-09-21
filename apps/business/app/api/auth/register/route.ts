@@ -22,7 +22,7 @@ export async function POST(request: Request) {
       email,
       password,
       email_confirm: true,
-      user_metadata: { negocio: negocio || '', categoria: categoria || '' },
+      user_metadata: { negocio: negocio || '', categoria: categoria || '', role: 'negocio', nombre: negocio || '' },
     })
 
     if (error) {

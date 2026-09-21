@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Share2, LogOut, Settings, Copy, Check, Heart, ChevronRight } from "lucide-react";
 import { MobileShell, Logo } from "@/components/enplan/MobileShell";
 import { MapBackdrop } from "@/components/enplan/MapBackdrop";
@@ -25,6 +25,10 @@ function ProfilePage() {
   const { user, benefits, savedPlaces } = useEnplanStore();
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (user) enplanActions.refreshBenefits();
+  }, [user?.id]);
 
   if (!user) {
     return (
@@ -57,14 +61,15 @@ function ProfilePage() {
   }
 
   const initials = user.name.slice(0, 2).toUpperCase();
-  const used = benefits.filter((b) => b.status === "used").length || 12;
-  const visited = new Set(benefits.map((b) => b.businessId)).size || 8;
+  const used = benefits.filter((b) => b.status === "used").length;
+  const visited = new Set(benefits.map((b) => b.businessId)).size;
+  const ahorro = benefits.reduce((sum, b) => sum + b.ahorroCalculado, 0);
 
   const stats = [
     { label: "Beneficios usados", value: String(used), accent: false },
     { label: "Negocios visitados", value: String(visited), accent: false },
     { label: "Amigos referidos", value: String(REFERRAL_COUNT), accent: false },
-    { label: "Ahorro estimado", value: "~$1,840", accent: true },
+    { label: "Ahorro estimado", value: `~$${ahorro.toLocaleString("es-MX")}`, accent: true },
   ];
 
 
@@ -184,9 +189,9 @@ function ProfilePage() {
       <div className="mt-8 flex justify-center px-5 pb-10">
         <button
           type="button"
-          onClick={() => {
+          onClick={async () => {
             if (typeof window !== "undefined" && !window.confirm("¿Cerrar sesión en enplan.?")) return;
-            enplanActions.logout();
+            await enplanActions.logout();
             navigate({ to: "/" });
           }}
           className="flex items-center gap-2 text-sm font-semibold text-[#2B2B23]/50"

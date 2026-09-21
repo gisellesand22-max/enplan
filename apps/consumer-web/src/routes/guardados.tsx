@@ -1,12 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Heart } from "lucide-react";
-import { BUSINESSES } from "@/lib/enplan-data";
+import { fetchNegocios } from "@/lib/negocios";
 import { useEnplanStore } from "@/lib/enplan-store";
 import { MobileShell } from "@/components/enplan/MobileShell";
 import { MapBackdrop } from "@/components/enplan/MapBackdrop";
 import { BusinessCard } from "@/components/enplan/BusinessCard";
 
 export const Route = createFileRoute("/guardados")({
+  loader: () => fetchNegocios(),
   head: () => ({
     meta: [
       { title: "Lugares guardados — enplan." },
@@ -20,8 +21,9 @@ export const Route = createFileRoute("/guardados")({
 const bodyFont = { fontFamily: '"Inter", system-ui, sans-serif' as const };
 
 function GuardadosPage() {
+  const businesses = Route.useLoaderData();
   const { savedPlaces } = useEnplanStore();
-  const saved = BUSINESSES.filter((b) => savedPlaces.includes(b.id));
+  const saved = businesses.filter((b) => savedPlaces.includes(b.id));
 
   return (
     <MobileShell>

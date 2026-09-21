@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { BUSINESSES } from "@/lib/enplan-data";
+import { fetchNegocios } from "@/lib/negocios";
 
 const BASE_URL = "";
 
@@ -8,9 +8,10 @@ export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
+        const businesses = await fetchNegocios();
         const entries = [
           { path: "/", priority: "1.0", changefreq: "weekly" as const },
-          ...BUSINESSES.map((b) => ({
+          ...businesses.map((b) => ({
             path: `/business/${b.id}`,
             priority: "0.8",
             changefreq: "weekly" as const,

@@ -53,23 +53,31 @@ function AjustesPage() {
   );
   const [editing, setEditing] = useState<"nombre" | "email" | null>(null);
   const [draft, setDraft] = useState("");
+  const [editError, setEditError] = useState<string | null>(null);
 
   const startEdit = (field: "nombre" | "email") => {
     setDraft(field === "nombre" ? user?.name ?? "" : user?.email ?? "");
+    setEditError(null);
     setEditing(field);
   };
 
-  const saveEdit = () => {
+  const saveEdit = async () => {
     if (!draft.trim()) return;
-    enplanActions.updateUser(editing === "nombre" ? { name: draft.trim() } : { email: draft.trim() });
+    const { error } = await enplanActions.updateUser(
+      editing === "nombre" ? { name: draft.trim() } : { email: draft.trim() },
+    );
+    if (error) {
+      setEditError(error);
+      return;
+    }
     setEditing(null);
   };
 
   const plan = "Gratis";
 
-  const onLogout = () => {
+  const onLogout = async () => {
     if (typeof window !== "undefined" && !window.confirm("¿Cerrar sesión en enplan.?")) return;
-    enplanActions.logout();
+    await enplanActions.logout();
     navigate({ to: "/" });
   };
 
@@ -89,6 +97,7 @@ function AjustesPage() {
             onChange={setDraft}
             onSave={saveEdit}
             onCancel={() => setEditing(null)}
+            error={editError}
           />
         ) : (
           <Row
@@ -105,6 +114,7 @@ function AjustesPage() {
             onSave={saveEdit}
             onCancel={() => setEditing(null)}
             type="email"
+            error={editError}
           />
         ) : (
           <Row
@@ -225,6 +235,7 @@ function EditRow({
   onSave,
   onCancel,
   type = "text",
+  error,
 }: {
   label: string;
   value: string;
@@ -232,6 +243,7 @@ function EditRow({
   onSave: () => void;
   onCancel: () => void;
   type?: string;
+  error?: string | null;
 }) {
   return (
     <div className="px-4 py-3.5">
@@ -257,6 +269,11 @@ function EditRow({
           <Check size={16} />
         </button>
       </div>
+      {error && (
+        <p className="mt-2 text-xs text-[#E04848]" style={bodyFont}>
+          {error}
+        </p>
+      )}
       <button
         type="button"
         onClick={onCancel}

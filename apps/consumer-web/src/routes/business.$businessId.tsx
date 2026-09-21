@@ -1,13 +1,14 @@
 import { createFileRoute, Link, notFound, useNavigate, useRouter } from "@tanstack/react-router";
 import { MapPin, Phone, Clock, MessageCircle, ArrowLeft, Users, Heart } from "lucide-react";
-import { BUSINESSES, type Business } from "@/lib/enplan-data";
+import type { Business } from "@/lib/enplan-data";
+import { fetchNegocio } from "@/lib/negocios";
 import { enplanActions, useEnplanStore } from "@/lib/enplan-store";
 import { MobileShell, Logo } from "@/components/enplan/MobileShell";
 import { MapBackdrop } from "@/components/enplan/MapBackdrop";
 
 export const Route = createFileRoute("/business/$businessId")({
-  loader: ({ params }): { business: Business } => {
-    const business = BUSINESSES.find((b) => b.id === params.businessId);
+  loader: async ({ params }): Promise<{ business: Business }> => {
+    const business = await fetchNegocio(params.businessId);
     if (!business) throw notFound();
     return { business };
   },
@@ -106,13 +107,21 @@ function BusinessPage() {
       {/* Header image */}
       <div className="relative">
         <div className="flex h-[220px] w-full items-center justify-center bg-[#D6D0C4] text-sm font-medium text-[#2B2B23]/50">
-          Foto principal del negocio
+          {business.coverUrl ? (
+            <img src={business.coverUrl} alt="" className="h-full w-full object-cover" />
+          ) : (
+            "Foto principal del negocio"
+          )}
         </div>
         <div
-          className="absolute flex h-16 w-16 items-center justify-center rounded-full border-[3px] border-white bg-[#D6D0C4] text-[10px] text-[#2B2B23]/60"
+          className="absolute flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-[3px] border-white bg-[#D6D0C4] text-[10px] text-[#2B2B23]/60"
           style={{ left: 16, bottom: -32 }}
         >
-          Logo
+          {business.logoUrl ? (
+            <img src={business.logoUrl} alt="" className="h-full w-full object-cover" />
+          ) : (
+            "Logo"
+          )}
         </div>
         <button
           type="button"
