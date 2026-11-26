@@ -151,6 +151,16 @@ export const enplanActions = {
     state = { ...state, user: null, benefits: [] };
     emit();
   },
+  async deleteAccount() {
+    if (!state.user) return { error: "No hay sesión" };
+    const { error } = await supabase.rpc("delete_my_account");
+    if (error) return { error: error.message };
+    await supabase.auth.signOut();
+    state = { ...state, user: null, benefits: [], savedPlaces: [] };
+    persistSaved();
+    emit();
+    return { error: null };
+  },
   async updateUser(patch: { name?: string; email?: string }) {
     if (!state.user) return { error: "No hay sesión" };
     if (patch.name) {

@@ -81,6 +81,28 @@ function AjustesPage() {
     navigate({ to: "/" });
   };
 
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  const onDeleteAccount = async () => {
+    if (
+      typeof window !== "undefined" &&
+      !window.confirm(
+        "¿Eliminar tu cuenta de enplan.? Se borrarán tus datos y tu historial de beneficios. Esta acción no se puede deshacer.",
+      )
+    )
+      return;
+    setDeleting(true);
+    setDeleteError(null);
+    const { error } = await enplanActions.deleteAccount();
+    setDeleting(false);
+    if (error) {
+      setDeleteError(error);
+      return;
+    }
+    navigate({ to: "/" });
+  };
+
   return (
     <MobileShell>
       <MapBackdrop area="centro" />
@@ -180,6 +202,24 @@ function AjustesPage() {
           <p className="text-center text-xs text-[#2B2B23]/40" style={bodyFont}>
             No has iniciado sesión
           </p>
+        )}
+        {user && (
+          <>
+            <button
+              type="button"
+              onClick={onDeleteAccount}
+              disabled={deleting}
+              className="mt-3 w-full py-3 text-center text-xs font-medium text-[#2B2B23]/50 disabled:opacity-50"
+              style={bodyFont}
+            >
+              {deleting ? "Eliminando cuenta…" : "Eliminar mi cuenta"}
+            </button>
+            {deleteError && (
+              <p className="text-center text-xs text-[#E04848]" style={bodyFont}>
+                {deleteError}
+              </p>
+            )}
+          </>
         )}
       </div>
       </div>
